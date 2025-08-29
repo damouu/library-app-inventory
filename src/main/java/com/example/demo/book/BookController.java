@@ -32,8 +32,8 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> getPhones(@RequestParam String search) {
-        return ResponseEntity.ok(bookService.searchBooks(search));
+    public ResponseEntity<?> searchBookByTitle(@RequestParam String title) {
+        return ResponseEntity.ok(bookService.searchBooks(title));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
