@@ -1,8 +1,6 @@
-package com.example.demo.student_id_card;
+package com.example.demo.memberCard;
 
 import com.example.demo.book.BookStudent;
-import com.example.demo.course.Course;
-import com.example.demo.student.Student;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -15,21 +13,21 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "Student_id_card")
-@Table(name = "Student_id_card", uniqueConstraints = @UniqueConstraint(columnNames = {"uuid", "uuid"}, name = "student_card_uuid_unique"))
+@Entity(name = "memberCard")
+@Table(name = "memberCard", uniqueConstraints = @UniqueConstraint(columnNames = {"uuid", "uuid"}, name = "student_card_uuid_unique"))
 @NoArgsConstructor
 @Where(clause = "is_active=1")
-public class StudentIdCard implements Serializable {
+public class MemberCard implements Serializable {
     @Id
     @Column(unique = true, updatable = false, nullable = false)
-    @SequenceGenerator(name = "student_id_card_sequence", allocationSize = 1, sequenceName = "student_id_card_sequence")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_id_card_sequence")
+    @SequenceGenerator(name = "memberCard_sequence", allocationSize = 1, sequenceName = "memberCard_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "memberCard_sequence")
     @Getter(onMethod = @__(@JsonIgnore)) // generate the getter with the specific annotation.
     @Setter
     private Integer id;
@@ -43,14 +41,16 @@ public class StudentIdCard implements Serializable {
     @Column(name = "created_at")
     @Getter
     @Setter
-    private LocalDate created_at;
+    private LocalDateTime created_at;
 
     @Column(name = "valid_until")
     @Getter
     @Setter
-    private LocalDate valid_until;
+    private LocalDateTime valid_until;
 
     @Column(name = "is_active")
+    @Getter
+    @Setter
     private Boolean active;
 
 //    @OneToOne(cascade = CascadeType.ALL)
@@ -61,7 +61,7 @@ public class StudentIdCard implements Serializable {
 
 
 //    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.ALL})
-//    @JoinTable(name = "course_student", joinColumns = {@JoinColumn(name = "student_id_card")}, inverseJoinColumns = {@JoinColumn(name = "course")})
+//    @JoinTable(name = "course_student", joinColumns = {@JoinColumn(name = "memberCard")}, inverseJoinColumns = {@JoinColumn(name = "course")})
 //    @Getter(onMethod = @__(@JsonIgnore))
 //    @Column(name = "uuid", columnDefinition = "UUID", nullable = false)
 //    @Setter
@@ -74,7 +74,7 @@ public class StudentIdCard implements Serializable {
     protected Set<BookStudent> books = new HashSet<>();
 
     @JsonCreator
-    public StudentIdCard(@JsonProperty("uuid") UUID uuid) {
+    public MemberCard(@JsonProperty("uuid") UUID uuid) {
         this.uuid = uuid;
     }
 }

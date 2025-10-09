@@ -1,7 +1,7 @@
 package com.example.demo.course;
 
-import com.example.demo.student_id_card.StudentIdCard;
-import com.example.demo.student_id_card.StudentIdCardRepository;
+import com.example.demo.memberCard.MemberCard;
+import com.example.demo.memberCard.MemberCardRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,7 @@ class CourseServiceTest {
     private CourseRepository courseRepository;
 
     @Mock
-    private StudentIdCardRepository studentIdCardRepository;
+    private MemberCardRepository studentIdCardRepository;
 
     @InjectMocks
     private CourseService courseService;
@@ -89,7 +89,7 @@ class CourseServiceTest {
 
     @Test
     void postStudentCourse() {
-        StudentIdCard studentIdCard = new StudentIdCard(UUID.randomUUID());
+        MemberCard studentIdCard = new MemberCard(UUID.randomUUID());
         Course course = new Course(UUID.randomUUID(), "course_test", "campus_test", "university_test");
         Mockito.when(courseRepository.findByUuid(course.getUuid())).thenReturn(java.util.Optional.of(course));
         Mockito.when(studentIdCardRepository.findStudentIdCardByUuid(studentIdCard.getUuid())).thenReturn(java.util.Optional.of(studentIdCard));
@@ -105,7 +105,7 @@ class CourseServiceTest {
     @Test
     void deleteStudentCourse() {
         Course course = new Course(UUID.randomUUID(), "course_test", "campus_test", "university_test");
-        StudentIdCard studentIdCard = new StudentIdCard(UUID.randomUUID());
+        MemberCard studentIdCard = new MemberCard(UUID.randomUUID());
         course.getStudentIdCards().add(studentIdCard);
         studentIdCard.getCourses().add(course);
         Mockito.when(courseRepository.findByUuid(course.getUuid())).thenReturn(java.util.Optional.of(course));
@@ -118,8 +118,8 @@ class CourseServiceTest {
     @Test
     void getStudentsCourse() {
         Course course = new Course(UUID.randomUUID(), "course_test", "campus_test", "university_test");
-        StudentIdCard studentIdCard = new StudentIdCard(UUID.randomUUID());
-        StudentIdCard studentIdCard1 = new StudentIdCard(UUID.randomUUID());
+        MemberCard studentIdCard = new MemberCard(UUID.randomUUID());
+        MemberCard studentIdCard1 = new MemberCard(UUID.randomUUID());
         course.getStudentIdCards().add(studentIdCard);
         course.getStudentIdCards().add(studentIdCard1);
         Mockito.when(courseRepository.findByUuid(course.getUuid())).thenReturn(java.util.Optional.of(course));

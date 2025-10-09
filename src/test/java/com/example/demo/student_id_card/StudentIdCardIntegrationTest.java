@@ -2,6 +2,8 @@ package com.example.demo.student_id_card;
 
 import com.example.demo.course.Course;
 import com.example.demo.course.CourseRepository;
+import com.example.demo.memberCard.MemberCardRepository;
+import com.example.demo.memberCard.MemberCard;
 import com.example.demo.student.Student;
 import com.example.demo.student.StudentRepository;
 import org.junit.jupiter.api.Assertions;
@@ -33,7 +35,7 @@ class StudentIdCardIntegrationTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private StudentIdCardRepository studentIdCardRepository;
+    private MemberCardRepository studentIdCardRepository;
 
     @Autowired
     private StudentRepository studentRepository;
@@ -45,7 +47,7 @@ class StudentIdCardIntegrationTest {
     void getStudentStudentIdCard() {
         Student student = new Student(UUID.randomUUID(), "Tidus",
                 LocalDate.of(2000, Month.JANUARY, 21), "tidus.finalfantasy@hotmail.com");
-        StudentIdCard studentIdCard = new StudentIdCard(UUID.randomUUID());
+        MemberCard studentIdCard = new MemberCard(UUID.randomUUID());
         studentIdCard.setStudent(student);
         studentIdCardRepository.save(studentIdCard);
         ResponseEntity<Student> responseEntity =
@@ -61,7 +63,7 @@ class StudentIdCardIntegrationTest {
     void deleteStudentIdCard() {
         Student student = new Student(UUID.randomUUID(), "Tidus",
                 LocalDate.of(2000, Month.JANUARY, 21), "tidus.finalfantasy@hotmail.com");
-        StudentIdCard studentIdCard = new StudentIdCard(UUID.randomUUID());
+        MemberCard studentIdCard = new MemberCard(UUID.randomUUID());
         studentIdCard.setStudent(student);
         studentIdCardRepository.save(studentIdCard);
         restTemplate.delete("http://localhost:" + port + "/api/studentCard/" + studentIdCard.getUuid());
@@ -80,7 +82,7 @@ class StudentIdCardIntegrationTest {
     @Test
     void postStudentIdCard() {
         Optional<Student> student = studentRepository.findById(7);
-        ResponseEntity<StudentIdCard> responseEntity = restTemplate.postForEntity("http://localhost:" + port + "/api/studentCard/student/" + student.get().getUuid(), null, StudentIdCard.class);
+        ResponseEntity<MemberCard> responseEntity = restTemplate.postForEntity("http://localhost:" + port + "/api/studentCard/student/" + student.get().getUuid(), null, MemberCard.class);
         Assertions.assertEquals(responseEntity.getStatusCodeValue(), 201);
         Assertions.assertTrue(Objects.requireNonNull(responseEntity.getHeaders().getContentType()).isCompatibleWith(MediaType.APPLICATION_JSON));
         Assertions.assertEquals(responseEntity.getHeaders().getLocation(), URI.create("http://localhost:8083/api/studentCard/" + Objects.requireNonNull(responseEntity.getBody()).getUuid()));
@@ -88,7 +90,7 @@ class StudentIdCardIntegrationTest {
 
     @Test
     void getStudentIdCardCourse() {
-        Optional<StudentIdCard> studentIdCard = studentIdCardRepository.findById(10);
+        Optional<MemberCard> studentIdCard = studentIdCardRepository.findById(10);
         Optional<Course> course = courseRepository.findById(1);
         Optional<Course> course1 = courseRepository.findById(2);
         studentIdCard.get().getCourses().add(course.get());
@@ -102,8 +104,8 @@ class StudentIdCardIntegrationTest {
 
     @Test
     void getStudentIdCard() {
-        Optional<StudentIdCard> studentIdCard = studentIdCardRepository.findById(1);
-        var responseEntity = restTemplate.getForEntity("http://localhost:" + port + "/api/studentCard/" + studentIdCard.get().getUuid(), StudentIdCard.class);
+        Optional<MemberCard> studentIdCard = studentIdCardRepository.findById(1);
+        var responseEntity = restTemplate.getForEntity("http://localhost:" + port + "/api/studentCard/" + studentIdCard.get().getUuid(), MemberCard.class);
         Assertions.assertTrue(Objects.requireNonNull(responseEntity.getHeaders().getContentType()).isCompatibleWith(MediaType.APPLICATION_JSON));
         Assertions.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
         Assertions.assertEquals(studentIdCard.get().getUuid(), Objects.requireNonNull(responseEntity.getBody()).getUuid());

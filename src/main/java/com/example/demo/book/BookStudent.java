@@ -1,6 +1,6 @@
 package com.example.demo.book;
 
-import com.example.demo.student_id_card.StudentIdCard;
+import com.example.demo.memberCard.MemberCard;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,7 +28,7 @@ public class BookStudent {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id_card")
-    private StudentIdCard studentIdCard;
+    private MemberCard studentIdCard;
 
     private Date borrow_request_date;
     private Date borrow_start_date;

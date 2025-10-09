@@ -1,7 +1,7 @@
 package com.example.demo.course;
 
-import com.example.demo.student_id_card.StudentIdCard;
-import com.example.demo.student_id_card.StudentIdCardRepository;
+import com.example.demo.memberCard.MemberCard;
+import com.example.demo.memberCard.MemberCardRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ class CourseIntegrationTest {
     private CourseRepository courseRepository;
 
     @Autowired
-    private StudentIdCardRepository studentIdCardRepository;
+    private MemberCardRepository studentIdCardRepository;
 
 
     @Test
@@ -88,15 +88,15 @@ class CourseIntegrationTest {
     @Test
     void getStudentsCourse() {
         Course course = new Course(UUID.randomUUID(), "course_test", "campus_test", "university_test");
-        StudentIdCard studentIdCard = new StudentIdCard(UUID.randomUUID());
-        StudentIdCard studentIdCard1 = new StudentIdCard(UUID.randomUUID());
+        MemberCard studentIdCard = new MemberCard(UUID.randomUUID());
+        MemberCard studentIdCard1 = new MemberCard(UUID.randomUUID());
         course.getStudentIdCards().add(studentIdCard);
         course.getStudentIdCards().add(studentIdCard1);
         studentIdCard.getCourses().add(course);
         studentIdCard1.getCourses().add(course);
         courseRepository.save(course);
-        ResponseEntity<StudentIdCard[]> responseEntity = restTemplate.getForEntity
-                ("http://localhost:" + port + "/api/course/" + course.getUuid() + "/student", StudentIdCard[].class);
+        ResponseEntity<MemberCard[]> responseEntity = restTemplate.getForEntity
+                ("http://localhost:" + port + "/api/course/" + course.getUuid() + "/student", MemberCard[].class);
         Assertions.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
         Assertions.assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType());
         Assertions.assertTrue(Arrays.stream(Objects.requireNonNull(responseEntity.getBody())).count() > 0);
@@ -105,7 +105,7 @@ class CourseIntegrationTest {
     @Test
     void deleteStudentCourse() {
         Course course = new Course(UUID.randomUUID(), "course_test", "campus_test", "university_test");
-        StudentIdCard studentIdCard = new StudentIdCard(UUID.randomUUID());
+        MemberCard studentIdCard = new MemberCard(UUID.randomUUID());
         course.getStudentIdCards().add(studentIdCard);
         studentIdCard.getCourses().add(course);
         courseRepository.save(course);
@@ -123,7 +123,7 @@ class CourseIntegrationTest {
     @Test
     void postStudentCourse() {
         Course course = new Course(UUID.randomUUID(), "course_test", "campus_test", "university_test");
-        StudentIdCard studentIdCard = new StudentIdCard(UUID.randomUUID());
+        MemberCard studentIdCard = new MemberCard(UUID.randomUUID());
         courseRepository.save(course);
         studentIdCardRepository.save(studentIdCard);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://localhost:" + port + "/api/course/" + course.getUuid() + "/student/" + studentIdCard.getUuid(), null, String.class);

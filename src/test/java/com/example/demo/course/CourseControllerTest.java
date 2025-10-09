@@ -1,6 +1,6 @@
 package com.example.demo.course;
 
-import com.example.demo.student_id_card.StudentIdCard;
+import com.example.demo.memberCard.MemberCard;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -85,7 +85,7 @@ class CourseControllerTest {
 
     @Test
     void postStudentCourse() throws Exception {
-        StudentIdCard studentIdCard = new StudentIdCard(UUID.randomUUID());
+        MemberCard studentIdCard = new MemberCard(UUID.randomUUID());
         Course course = new Course(UUID.randomUUID(), "course_test", "campus_test", "university_test");
         Mockito.when(courseService.postStudentCourse(course.getUuid(), studentIdCard.getUuid())).thenReturn(ResponseEntity.status(HttpStatus.CREATED).body("student card" + studentIdCard.getUuid() + "added to the course" + course.getUuid()));
         mockMvc.perform(post("/api/course/" + course.getUuid() + "/student/" + studentIdCard.getUuid()))
@@ -96,7 +96,7 @@ class CourseControllerTest {
     @Test
     void deleteStudentCourse() throws Exception {
         Course course = new Course(UUID.randomUUID(), "course_test", "campus_test", "university_test");
-        StudentIdCard studentIdCard = new StudentIdCard(UUID.randomUUID());
+        MemberCard studentIdCard = new MemberCard(UUID.randomUUID());
         course.getStudentIdCards().add(studentIdCard);
         studentIdCard.getCourses().add(course);
         Mockito.when(courseService.deleteStudentCourse(course.getUuid(), studentIdCard.getUuid())).thenReturn(ResponseEntity.status(204).body(course));
@@ -108,9 +108,9 @@ class CourseControllerTest {
     @Test
     void getStudentsCourse() throws Exception {
         Course course = new Course(UUID.randomUUID(), "course_test", "campus_test", "university_test");
-        StudentIdCard studentIdCard = new StudentIdCard(UUID.randomUUID());
-        StudentIdCard studentIdCard1 = new StudentIdCard(UUID.randomUUID());
-        List<StudentIdCard> studentIdCardCollection = Arrays.asList(studentIdCard, studentIdCard1);
+        MemberCard studentIdCard = new MemberCard(UUID.randomUUID());
+        MemberCard studentIdCard1 = new MemberCard(UUID.randomUUID());
+        List<MemberCard> studentIdCardCollection = Arrays.asList(studentIdCard, studentIdCard1);
         Mockito.when(courseService.getStudentsCourse(course.getUuid())).thenReturn(ResponseEntity.ok(studentIdCardCollection));
         mockMvc.perform(get("/api/course/" + course.getUuid() + "/student")
                 .contentType(MediaType.APPLICATION_JSON))
