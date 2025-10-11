@@ -1,7 +1,7 @@
 package com.example.demo.book;
 
-import com.example.demo.student_id_card.StudentIdCard;
-import com.example.demo.student_id_card.StudentIdCardRepository;
+import com.example.demo.memberCard.MemberCard;
+import com.example.demo.memberCard.MemberCardRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.data.domain.Page;
@@ -26,7 +26,7 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
-    private final StudentIdCardRepository studentIdCardRepository;
+    private final MemberCardRepository memberCardRepository;
     private final BookStudentRepository bookStudentRepository;
 
     /**
@@ -86,9 +86,9 @@ public class BookService {
         Book book = bookRepository.findByUuid(bookUuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "book not found"));
         Map<String, String> bookData = new HashMap<>();
         Map<String, Map<String, String>> response = new HashMap<>();
-//        if (book.getStudentIdCard() != null) {
+//        if (book.getMemberCard() != null) {
 //            Map<String, String> studentCard = new HashMap<>();
-//            studentCard.put("studentCardUUID", String.valueOf(book.getStudentIdCard().getUuid()));
+//            studentCard.put("memberCardUUID", String.valueOf(book.getMemberCard().getUuid()));
 //            response.put("studentCard", studentCard);
 //        }
         bookData.put("UUID", String.valueOf(book.getUuid()));
@@ -160,13 +160,16 @@ public class BookService {
      * Insert student borrow books response entity.
      *
      * @param bookUuid        the book uuid
-     * @param studentUuidCard the student uuid card
+     * @param memberCardUUIDCard the student uuid card
      * @return {@code } the response entity
      */
-    public ResponseEntity<?> insertStudentBorrowBooks(UUID bookUuid, UUID studentUuidCard) {
+    //fixme add to the BookStudent entity a borrow_end_date property value when saved into the db
+    //todo create a youtrack ticket for the change to be associated to a ticket
+    //todo add a borrow_return_date of two weeks when borrowing a book.
+    public ResponseEntity<?> insertStudentBorrowBooks(UUID bookUuid, UUID memberCardUUIDCard) {
         Book book = bookRepository.findByUuid(bookUuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "book does not exist"));
-        StudentIdCard studentIdCard = studentIdCardRepository.findStudentIdCardByUuid(studentUuidCard).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "studentIdCard does not exist" + studentUuidCard));
-        Optional<BookStudent> bookStudent = bookStudentRepository.findBookStudentByID(book.getId());
+        MemberCard MemberCard = memberCardRepository.findMemberCardByUuid(memberCardUUIDCard).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "MemberCard does not exist" + memberCardUUIDCard));
+        Optional<BookMemberCard> bookStudent = bookStudentRepository.findBookStudentByID(book.getId());
         int status;
         String response;
         if (bookStudent.isPresent() && bookStudent.get().getBorrow_return_date() == null) {
@@ -174,10 +177,13 @@ public class BookService {
             response = "already borrowed";
         } else {
             Date borrow_request_date = new Date();
-            BookStudent bookStudent1 = new BookStudent(borrow_request_date, borrow_request_date, null, null, false);
-            bookStudent1.setBook(book);
-            bookStudent1.setStudentIdCard(studentIdCard);
-            bookStudentRepository.save(bookStudent1);
+            BookMemberCard BookMemberCard1 = new BookMemberCard(borrow_request_date, borrow_request_date, null, null, false);
+            BookMemberCard1.setBook(book);
+            BookMemberCard1.setMemberCard(MemberCard);
+            long date = System.currentTimeMillis() + 14 * 24 * 3600 * 1000;
+            Date newDate = new Date(date);
+            bookStudent.get().setBorrow_end_date(newDate);
+            bookStudentRepository.save(BookMemberCard1);
             status = 201;
             response = "created";
         }
@@ -188,12 +194,12 @@ public class BookService {
      * Return student borrow books response entity.
      *
      * @param bookUuid        the book uuid
-     * @param studentUuidCard the student uuid card
+     * @param memberCardUUIDCard the student uuid card
      * @return the response entity
      */
-    public ResponseEntity<?> returnStudentBorrowBooks(UUID bookUuid, UUID studentUuidCard) {
+    public ResponseEntity<?> returnStudentBorrowBooks(UUID bookUuid, UUID memberCardUUIDCard) {
         Book book = bookRepository.findByUuid(bookUuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "book does not exist"));
-        Optional<BookStudent> bookStudent = bookStudentRepository.findBookStudentByID(book.getId());
+        Optional<BookMemberCard> bookStudent = bookStudentRepository.findBookStudentByID(book.getId());
         int status;
         String response;
         if (bookStudent.isPresent() && bookStudent.get().getBorrow_return_date() == null) {
@@ -214,13 +220,13 @@ public class BookService {
      * Return student borrow books response entity.
      *
      * @param bookUuid        the book uuid
-     * @param studentUuidCard the student uuid card
+     * @param memberCardUUIDCard the student uuid card
      * @return the response entity
      */
-    public ResponseEntity<?> updateReturnStudentBorrowBook(UUID bookUuid, UUID studentUuidCard) {
+    public ResponseEntity<?> updateReturnStudentBorrowBook(UUID bookUuid, UUID memberCardUUIDCard) {
         Book book = bookRepository.findByUuid(bookUuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "book does not exist"));
-        StudentIdCard studentIdCard = studentIdCardRepository.findStudentIdCardByUuid(studentUuidCard).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "studentIdCard does not exist" + studentUuidCard));
-        Optional<BookStudent> bookStudent = bookStudentRepository.findBookStudentByIDUpdate(book.getId());
+        MemberCard MemberCard = memberCardRepository.findMemberCardByUuid(memberCardUUIDCard).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "MemberCard does not exist" + memberCardUUIDCard));
+        Optional<BookMemberCard> bookStudent = bookStudentRepository.findBookStudentByIDUpdate(book.getId());
         int status;
         String response;
         if (bookStudent.isPresent() && bookStudent.get().getBorrow_return_date() == null && !bookStudent.get().isGranted_borrow_extend()) {
@@ -238,17 +244,17 @@ public class BookService {
         return ResponseEntity.status(status).body(response);
     }
 
-    /**
-     * Gets books student card.
-     *
-     * @param studentUuidCard the student uuid card
-     * @return the books student card
-     */
-    public ResponseEntity<?> getBooksStudentCard(UUID studentUuidCard) {
-        StudentIdCard studentIdCard = studentIdCardRepository.findStudentIdCardByUuid(studentUuidCard).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "studentIdCard does not exist" + studentUuidCard));
-        if (!studentIdCard.getBooks().isEmpty()) {
-            return ResponseEntity.status(200).body(studentIdCard.getBooks());
-        }
-        return ResponseEntity.noContent().build();
-    }
+//    /**
+//     * Gets books student card.
+//     *
+//     * @param memberCardUUIDCard the student uuid card
+//     * @return the books student card
+//     */
+//    public ResponseEntity<?> getBooksStudentCard(UUID memberCardUUIDCard) {
+//        MemberCard MemberCard = memberCardRepository.findMemberCardByUuid(memberCardUUIDCard).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "MemberCard does not exist" + memberCardUUIDCard));
+//        if (!MemberCard.getBooks().isEmpty()) {
+//            return ResponseEntity.status(200).body(MemberCard.getBooks());
+//        }
+//        return ResponseEntity.noContent().build();
+//    }
 }

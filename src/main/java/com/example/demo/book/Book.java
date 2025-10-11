@@ -77,7 +77,7 @@ public class Book {
 
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
-    private Set<BookStudent> students = new HashSet<>();
+    private Set<BookMemberCard> students = new HashSet<>();
 
     @JsonCreator
     public Book(@JsonProperty("uuid") UUID uuid, @JsonProperty("title") String title, @JsonProperty("genre") String genre, @JsonProperty("totalPages") Integer totalPages, @JsonProperty("publisher") String publisher, @JsonProperty("author") String author, @JsonProperty("created_at") LocalDate created_at) {
@@ -90,11 +90,11 @@ public class Book {
         this.created_at = created_at;
     }
 
-    public Set<BookStudent> getStudentIdCard() {
+    public Set<BookMemberCard> getMemberCard() {
         return students;
     }
 
-    public void setStudentIdCard(Set<BookStudent> students) {
+    public void setMemberCard(Set<BookMemberCard> students) {
         this.students = students;
     }
 }

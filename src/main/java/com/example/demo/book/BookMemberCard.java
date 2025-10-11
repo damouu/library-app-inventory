@@ -12,7 +12,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @Entity
-public class BookStudent {
+public class BookMemberCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +27,8 @@ public class BookStudent {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "student_id_card")
-    private MemberCard studentIdCard;
+    @JoinColumn(name = "memberCard")
+    private MemberCard memberCard;
 
     private Date borrow_request_date;
     private Date borrow_start_date;
@@ -36,7 +36,7 @@ public class BookStudent {
     private Date borrow_return_date;
     private boolean granted_borrow_extend;
 
-    public BookStudent(Date borrow_request_date, Date borrow_start_date, Date borrow_end_date, Date borrow_return_date, boolean granted_borrow_extend) {
+    public BookMemberCard(Date borrow_request_date, Date borrow_start_date, Date borrow_end_date, Date borrow_return_date, boolean granted_borrow_extend) {
         this.borrow_request_date = borrow_request_date;
         this.borrow_start_date = borrow_start_date;
         this.borrow_end_date = borrow_end_date;

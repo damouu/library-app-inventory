@@ -1,6 +1,5 @@
 package com.example.demo.book;
 
-import com.example.demo.student.StudentRepository;
 import com.github.javafaker.Faker;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +11,7 @@ import java.util.UUID;
 @Configuration
 public class BookConfiguration {
     //    @Bean
-    CommandLineRunner dedede(BookRepository bookRepository, StudentRepository studentRepository) {
+    CommandLineRunner dedede(BookRepository bookRepository) {
         return args -> {
             Faker faker = new Faker();
             for (int i = 1; i < 100; i++) {
