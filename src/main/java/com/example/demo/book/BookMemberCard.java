@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -30,7 +31,16 @@ public class BookMemberCard {
     @JoinColumn(name = "memberCard")
     private MemberCard memberCard;
 
-    private Date borrow_request_date;
+    @Column(columnDefinition = "UUID", name = "borrow_uuid", unique = true, nullable = false, insertable = false, updatable = false)
+    @Getter
+    @Setter
+    private UUID borrow_uuid;
+
+    @Column(name = "borrow_start_date", nullable = false, columnDefinition = "Date")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @Getter(onMethod = @__(@JsonIgnore))
+    @Setter
     private Date borrow_start_date;
     private Date borrow_end_date;
     private Date borrow_return_date;
