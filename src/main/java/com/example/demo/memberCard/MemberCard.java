@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -26,27 +25,26 @@ public class MemberCard implements Serializable {
     @Column(unique = true, updatable = false, nullable = false)
     @SequenceGenerator(name = "memberCard_sequence", allocationSize = 1, sequenceName = "memberCard_sequence")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "memberCard_sequence")
-    @Getter(onMethod = @__(@JsonIgnore)) // generate the getter with the specific annotation.
+    @Getter(onMethod = @__(@JsonIgnore))
     @Setter
     private Integer id;
 
-    @Column(name = "uuid", columnDefinition = "UUID", nullable = false)
-    @NotNull
+    @Column(name = "member_card_uuid", columnDefinition = "UUID", nullable = false)
     @Getter
     @Setter
-    private UUID uuid;
+    private UUID member_card_uuid;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", columnDefinition = "timestamp", nullable = false)
     @Getter
     @Setter
     private LocalDateTime created_at;
 
-    @Column(name = "valid_until")
+    @Column(name = "valid_until", columnDefinition = "date", nullable = false)
     @Getter
     @Setter
     private LocalDateTime valid_until;
 
-    @Column(name = "deleted_at", columnDefinition = "DATE")
+    @Column(name = "deleted_at", columnDefinition = "timestamp")
     @Getter
     @Setter
     private LocalDateTime deleted_at;
@@ -59,6 +57,6 @@ public class MemberCard implements Serializable {
 
     @JsonCreator
     public MemberCard(@JsonProperty("uuid") UUID uuid) {
-        this.uuid = uuid;
+        this.member_card_uuid = uuid;
     }
 }
