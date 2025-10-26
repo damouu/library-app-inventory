@@ -91,13 +91,13 @@ public class BookService {
 //            studentCard.put("memberCardUUID", String.valueOf(book.getMemberCard().getUuid()));
 //            response.put("studentCard", studentCard);
 //        }
-        bookData.put("UUID", String.valueOf(book.getUuid()));
-        bookData.put("author", book.getAuthor());
-        bookData.put("genre", book.getGenre());
-        bookData.put("publisher", book.getPublisher());
-        bookData.put("title", book.getTitle());
-        bookData.put("total_pages", String.valueOf(book.getTotalPages()));
-        bookData.put("created_at", String.valueOf(book.getCreated_at()));
+//        bookData.put("UUID", String.valueOf(book.getUuid()));
+//        bookData.put("author", book.getAuthor());
+//        bookData.put("genre", book.getGenre());
+//        bookData.put("publisher", book.getPublisher());
+//        bookData.put("title", book.getTitle());
+//        bookData.put("total_pages", String.valueOf(book.getTotalPages()));
+//        bookData.put("created_at", String.valueOf(book.getCreated_at()));
         response.put("book", bookData);
         return ResponseEntity.ok(response);
     }
@@ -124,9 +124,9 @@ public class BookService {
      * @throws ResponseStatusException throws if the given UUID does not correspond to an existing book in the db.
      */
     public ResponseEntity<Book> postBook(Book book) {
-        book.setUuid(UUID.randomUUID());
+        book.setBook_uuid(UUID.randomUUID());
         bookRepository.save(book);
-        return ResponseEntity.status(201).location(URI.create("http://localhost:8083/api/book/" + book.getUuid())).body(book);
+        return ResponseEntity.status(201).location(URI.create("http://localhost:8083/api/book/" + book.getBook_uuid())).body(book);
     }
 
     /**
@@ -151,8 +151,8 @@ public class BookService {
         Book book1 = oMapper.convertValue(map, Book.class);
         book1.setId(book.getId());
         bookRepository.save(book1);
-        Book book11 = bookRepository.findByUuid(book1.getUuid()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "book not found"));
-        return ResponseEntity.status(200).location(URI.create("http://localhost:8083/api/book/" + book11.getUuid())).body(book11);
+        Book book11 = bookRepository.findByUuid(book1.getBook_uuid()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "book not found"));
+        return ResponseEntity.status(200).location(URI.create("http://localhost:8083/api/book/" + book11.getBook_uuid())).body(book11);
     }
 
 
