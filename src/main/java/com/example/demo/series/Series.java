@@ -25,7 +25,7 @@ public class Series {
     @SequenceGenerator(name = "series_sequence", allocationSize = 1, sequenceName = "series_sequence")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "series_sequence")
     @Column(updatable = false, nullable = false)
-    @Getter(onMethod = @__(@JsonIgnore)) // generate the getter with the specific annotation.
+    @Getter(onMethod = @__(@JsonIgnore))
     @Setter
     private Integer id;
 
@@ -59,19 +59,19 @@ public class Series {
     @Setter
     private String publisher;
 
-    @Column(name = "last_print_publication_date", nullable = true, columnDefinition = "Date")
+    @Column(name = "last_print_publication_date", nullable = true, columnDefinition = "date")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @NotNull
-    @Getter(onMethod = @__(@JsonIgnore)) // generate the getter with the specific annotation.
+    @Getter(onMethod = @__(@JsonIgnore))
     @Setter
     private LocalDate last_print_publication_date;
 
-    @Column(name = "first_print_publication_date", nullable = false, columnDefinition = "Date")
+    @Column(name = "first_print_publication_date", nullable = false, columnDefinition = "date")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @NotNull
-    @Getter(onMethod = @__(@JsonIgnore)) // generate the getter with the specific annotation.
+    @Getter(onMethod = @__(@JsonIgnore))
     @Setter
     private LocalDate first_print_publication_date;
 
@@ -80,16 +80,16 @@ public class Series {
     @Setter
     private String author;
 
-    @Column(name = "deleted_at", columnDefinition = "DATE")
+    @Column(name = "deleted_at", columnDefinition = "timestamp")
     @Getter
     @Setter
     private LocalDate deleted_at;
 
-    @Column(name = "created_at", nullable = false, columnDefinition = "Date")
+    @Column(name = "created_at", nullable = false, columnDefinition = "timestamp")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @NotNull
-    @Getter(onMethod = @__(@JsonIgnore)) // generate the getter with the specific annotation.
+    @Getter(onMethod = @__(@JsonIgnore))
     @Setter
     private LocalDate created_at;
 
@@ -108,6 +108,5 @@ public class Series {
         this.deleted_at = deleted_at;
         this.created_at = created_at;
     }
-
 
 }
