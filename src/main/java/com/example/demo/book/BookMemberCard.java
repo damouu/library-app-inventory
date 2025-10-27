@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
@@ -37,7 +37,7 @@ public class BookMemberCard {
     @JoinColumn(name = "memberCard")
     private MemberCard memberCard;
 
-    @Column(columnDefinition = "UUID", name = "borrow_uuid", unique = true, nullable = false, insertable = false, updatable = false)
+    @Column(columnDefinition = "UUID", name = "borrow_uuid", nullable = false)
     @Getter
     @Setter
     private UUID borrow_uuid;
@@ -47,25 +47,25 @@ public class BookMemberCard {
     @JsonSerialize(using = LocalDateSerializer.class)
     @Getter(onMethod = @__(@JsonIgnore))
     @Setter
-    private Date borrow_start_date;
+    private LocalDate borrow_start_date;
 
     @Column(name = "borrow_end_date", nullable = false, columnDefinition = "Date")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @Getter(onMethod = @__(@JsonIgnore))
     @Setter
-    private Date borrow_end_date;
+    private LocalDate borrow_end_date;
 
-    @Column(name = "borrow_return_date", nullable = false, columnDefinition = "Date")
+    @Column(name = "borrow_return_date", columnDefinition = "Date")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @Getter(onMethod = @__(@JsonIgnore))
     @Setter
-    private Date borrow_return_date;
+    private LocalDate borrow_return_date;
 
 
     @JsonCreator
-    public BookMemberCard(Date borrow_start_date, Date borrow_end_date, Date borrow_return_date) {
+    public BookMemberCard(LocalDate borrow_start_date, LocalDate borrow_end_date, LocalDate borrow_return_date) {
         this.borrow_start_date = borrow_start_date;
         this.borrow_end_date = borrow_end_date;
         this.borrow_return_date = borrow_return_date;
