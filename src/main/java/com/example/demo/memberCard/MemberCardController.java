@@ -42,4 +42,9 @@ public class MemberCardController {
         return memberCardService.borrowBooks(memberCardUUID, booksArrayJson);
     }
 
+    @PostMapping(path = "/{memberCardUUID}/borrow/{borrowUUID}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> returnBorrowBooks(@PathVariable("memberCardUUID") UUID memberCardUUID, @PathVariable("borrowUUID") UUID borrowUUID) {
+        return memberCardService.returnBorrowBooks(memberCardUUID, borrowUUID);
+    }
+
 }
