@@ -50,7 +50,7 @@ public class Book {
     @Setter
     private LocalDate deleted_at;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "chapter_id", referencedColumnName = "id")
     private Chapter chapter_id;
 
