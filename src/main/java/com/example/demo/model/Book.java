@@ -1,6 +1,5 @@
-package com.example.demo.book;
+package com.example.demo.model;
 
-import com.example.demo.chapter.Chapter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -43,6 +42,7 @@ public class Book {
     @JsonSerialize(using = LocalDateSerializer.class)
     @Getter(onMethod = @__(@JsonIgnore))
     @Setter
+    @JsonIgnore
     private LocalDate added_date;
 
     @Column(name = "deleted_at", columnDefinition = "timestamp")
@@ -50,16 +50,16 @@ public class Book {
     @Setter
     private LocalDate deleted_at;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "chapter_id", referencedColumnName = "id")
-    private Chapter chapter_id;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "chapter_id")
+    @JsonIgnore
+    private Chapter chapter;
 
-    public Book(Integer id, UUID book_uuid, String title, boolean is_borrowed, LocalDate added_date, LocalDate deleted_at, Chapter chapter) {
+    public Book(Integer id, UUID book_uuid, String title, boolean is_borrowed, LocalDate added_date, LocalDate deleted_at) {
         this.id = id;
         this.book_uuid = book_uuid;
         this.is_borrowed = is_borrowed;
         this.added_date = added_date;
         this.deleted_at = deleted_at;
-        this.chapter_id = chapter;
     }
 }
