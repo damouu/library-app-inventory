@@ -1,7 +1,13 @@
-package com.example.demo.book;
+package com.example.demo.service;
 
-import com.example.demo.memberCard.MemberCard;
-import com.example.demo.memberCard.MemberCardRepository;
+import com.example.demo.model.Book;
+import com.example.demo.model.BookMemberCard;
+import com.example.demo.model.MemberCard;
+import com.example.demo.repository.BookRepository;
+import com.example.demo.repository.BookStudentRepository;
+import com.example.demo.repository.MemberCardRepository;
+import com.example.demo.repository.SeriesRepository;
+import com.example.demo.spec.BookSpecification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.data.domain.Page;
@@ -27,6 +33,7 @@ public class BookService {
     private final BookRepository bookRepository;
 
     private final MemberCardRepository memberCardRepository;
+    private final SeriesRepository seriesRepository;
     private final BookStudentRepository bookStudentRepository;
 
     /**
