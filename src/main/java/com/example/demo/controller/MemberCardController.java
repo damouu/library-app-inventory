@@ -1,5 +1,7 @@
-package com.example.demo.memberCard;
+package com.example.demo.controller;
 
+import com.example.demo.model.MemberCard;
+import com.example.demo.service.MemberCardService;
 import lombok.Data;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
