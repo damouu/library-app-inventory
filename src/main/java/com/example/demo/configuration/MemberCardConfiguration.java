@@ -1,5 +1,7 @@
-package com.example.demo.memberCard;
+package com.example.demo.configuration;
 
+import com.example.demo.model.MemberCard;
+import com.example.demo.repository.MemberCardRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
@@ -8,7 +10,7 @@ import java.util.UUID;
 @Configuration
 public class MemberCardConfiguration {
 
-//    @Bean
+    //    @Bean
     CommandLineRunner runner(MemberCardRepository serializable) {
         return args -> {
             for (int i = 1; i < 20; i++) {
