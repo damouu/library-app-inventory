@@ -1,0 +1,108 @@
+package com.example.demo.model;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Entity(name = "chapter")
+@Table(name = "chapter", uniqueConstraints = {@UniqueConstraint(name = "chapter_uuid", columnNames = "chapter_uuid")})
+@NoArgsConstructor
+public class Chapter {
+    @Id
+    @SequenceGenerator(name = "chapter_sequence", allocationSize = 1, sequenceName = "chapter_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "chapter_sequence")
+    @Column(updatable = false, nullable = false)
+    @Getter(onMethod = @__(@JsonIgnore))
+    @Setter
+    private Integer id;
+
+    @Column(nullable = false, columnDefinition = "UUID", name = "chapter_uuid")
+    @Getter
+    @Setter
+    private UUID chapter_uuid;
+
+    @Column(name = "title", nullable = false)
+    @Getter
+    @Setter
+    private String title;
+
+    @Column(name = "second_title", nullable = false)
+    @Getter
+    @Setter
+    private String second_title;
+
+    @Column(name = "total_pages", nullable = false)
+    @Getter
+    @Setter
+    private Integer totalPages;
+
+    @Column(name = "chapter_number", nullable = false)
+    @Getter
+    @Setter
+    private Integer chapter_number;
+
+    @Column(name = "cover_artwork_URL", nullable = false)
+    @Getter
+    @Setter
+    private String cover_artwork_URL;
+
+    @Column(name = "publication_date", nullable = false, columnDefinition = "Date")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @NotNull
+    @Getter
+    @Setter
+    private LocalDate publication_date;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "series_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Series series;
+
+    @OneToMany(mappedBy = "chapter", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter
+    @Setter
+    private List<Book> books;
+
+    @Column(name = "deleted_at", columnDefinition = "timestamp")
+    @Getter
+    @Setter
+    private LocalDate deleted_at;
+
+    @Column(name = "created_at", nullable = false, columnDefinition = "timestamp")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @Getter(onMethod = @__(@JsonIgnore))
+    @Setter
+    @JsonIgnore
+    private LocalDate created_at;
+
+    @JsonCreator
+    public Chapter(Integer id, UUID chapter_uuid, String title, String second_title, Integer totalPages, Integer chapter_number, String cover_artwork_URL, LocalDate publication_date, Series series, LocalDate deleted_at, LocalDate created_at) {
+        this.id = id;
+        this.chapter_uuid = chapter_uuid;
+        this.title = title;
+        this.second_title = second_title;
+        this.totalPages = totalPages;
+        this.chapter_number = chapter_number;
+        this.cover_artwork_URL = cover_artwork_URL;
+        this.publication_date = publication_date;
+        this.series = series;
+        this.deleted_at = deleted_at;
+        this.created_at = created_at;
+    }
+}

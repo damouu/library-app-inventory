@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  library-app-borrow:
+    image: damou/library-app-borrow:1.7.0
+    container_name: library-app-borrow-container
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "8081:8083"
+    volumes:
+      - .:app/
+    networks:
+      - library-app-network
+    env_file:
+      - .env
+
+networks:
+  library-app-network:
+    external: true
