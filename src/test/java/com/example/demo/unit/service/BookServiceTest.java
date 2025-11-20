@@ -3,6 +3,7 @@ package com.example.demo.unit.service;
 import com.example.demo.model.Book;
 import com.example.demo.repository.BookRepository;
 import com.example.demo.service.BookService;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,10 +29,11 @@ class BookServiceTest {
     @InjectMocks
     private BookService bookService;
 
+    Book book = Instancio.create(Book.class);
+
 
     @Test
     void getBookUuid() {
-        Book book = new Book(UUID.randomUUID(), "tittle", "genre", 200, "publisher", "author", LocalDate.now());
         Mockito.when(bookRepository.findByUuid(book.getBookUUID())).thenReturn(java.util.Optional.of(book));
         ResponseEntity<Map<String, Map<String, String>>> responseEntity = bookService.getBookUuid(book.getBookUUID());
         Assertions.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
@@ -40,7 +42,6 @@ class BookServiceTest {
 
     @Test
     void deleteBook() {
-        Book book = new Book(UUID.randomUUID(), "tittle", "genre", 200, "publisher", "author", LocalDate.now());
         Mockito.when(bookRepository.findByUuid(book.getBookUUID())).thenReturn(java.util.Optional.of(book));
         ResponseEntity<?> responseEntity = bookService.deleteBook(book.getBookUUID());
         Assertions.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
@@ -50,7 +51,6 @@ class BookServiceTest {
 
     @Test
     void postBook() {
-        Book book = new Book(null, "tittle", "genre", 200, "publisher", "author", LocalDate.now());
         ResponseEntity<Book> responseEntity = bookService.postBook(book);
         Assertions.assertEquals(201, responseEntity.getStatusCodeValue());
         Assertions.assertEquals(URI.create("http://localhost:8083/api/book/" + book.getBookUUID()), responseEntity.getHeaders().getLocation());
