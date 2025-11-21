@@ -62,4 +62,8 @@ public class Book {
         this.addedDate = added_date;
         this.deleted_at = deleted_at;
     }
+
+    public Book(UUID uuid, String tittle, String genre, int i, String publisher, String author, LocalDate now) {
+    }
+
 }
