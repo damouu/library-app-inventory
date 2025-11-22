@@ -40,8 +40,6 @@ public class BookService {
      * Gets books.
      *
      * @param allParams the all params
-     *                  test
-     *                  test
      * @return the books
      */
     public ResponseEntity<?> getBooks(Map allParams) {
