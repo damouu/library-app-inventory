@@ -170,9 +170,6 @@ public class BookService {
      * @param memberCardUUIDCard the student uuid card
      * @return {@code } the response entity
      */
-    //fixme add to the BookStudent entity a borrow_end_date property value when saved into the db
-    //todo create a youtrack ticket for the change to be associated to a ticket
-    //todo add a borrow_return_date of two weeks when borrowing a book.
     public ResponseEntity<?> insertStudentBorrowBooks(UUID bookUuid, UUID memberCardUUIDCard) {
         Book book = bookRepository.findByUuid(bookUuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "book does not exist"));
         MemberCard MemberCard = memberCardRepository.findMemberCardByUuid(memberCardUUIDCard).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "MemberCard does not exist" + memberCardUUIDCard));
