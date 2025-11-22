@@ -11,6 +11,8 @@ services:
       - "8081:8083"
     networks:
       - library-app-network
+    volumes:
+      - ./.env:/app/.env
     env_file:
       - .env
 
