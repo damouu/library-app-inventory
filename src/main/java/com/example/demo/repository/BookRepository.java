@@ -18,13 +18,13 @@ import java.util.UUID;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer>, JpaSpecificationExecutor<Book> {
 
-    @Query("SELECT b FROM book b WHERE b.deleted_at is null and b.book_uuid = :uuid")
+    @Query("SELECT b FROM book b WHERE b.deleted_at is null and b.bookUUID = :uuid")
     Optional<Book> findByUuid(UUID uuid);
 
 
     Page<Book> findAll(Specification<Book> specification, Pageable pageable);
 
-    @Query("SELECT b FROM book b WHERE b.chapter = :chapter and b.deleted_at is null and b.is_borrowed is false order by b.added_date desc ")
+    @Query("SELECT b FROM book b WHERE b.chapter = :chapter and b.deleted_at is null and b.currentlyBorrowed is false order by b.addedDate desc ")
     List<Book> findRecentBooksByChapter(@Param("chapter") Chapter chapter, Pageable pageable);
 
 }
