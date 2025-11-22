@@ -95,10 +95,10 @@ public class BookService {
         Map<String, Map<String, String>> response = new HashMap<>();
 //        if (book.getMemberCard() != null) {
 //            Map<String, String> studentCard = new HashMap<>();
-//            studentCard.put("memberCardUUID", String.valueOf(book.getMemberCard().getUuid()));
+//            studentCard.put("memberCardUUID", String.valueOf(book.getMemberCard().getBookUUID()));
 //            response.put("studentCard", studentCard);
 //        }
-//        bookData.put("UUID", String.valueOf(book.getUuid()));
+//        bookData.put("UUID", String.valueOf(book.getBookUUID()));
 //        bookData.put("author", book.getAuthor());
 //        bookData.put("genre", book.getGenre());
 //        bookData.put("publisher", book.getPublisher());
