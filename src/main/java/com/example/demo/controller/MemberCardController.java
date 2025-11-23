@@ -68,11 +68,11 @@ public class MemberCardController {
     @GetMapping(path = "/{memberCardUUID}/history", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getHistory(@PathVariable("memberCardUUID") UUID memberCardUUID, @AuthenticationPrincipal Jwt jwt, @RequestParam Map<String, ?> allParams) {
 
-//        String jwtMemberCard = jwt.getClaimAsString("user_memberCardUUID");
+        String jwtMemberCard = jwt.getClaimAsString("user_memberCardUUID");
 
-//        if (!jwtMemberCard.equals(memberCardUUID.toString())) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("memberCar UUID mismatch");
-//        }
+        if (!jwtMemberCard.equals(memberCardUUID.toString())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("memberCar UUID mismatch");
+        }
 
         return memberCardService.getHistory(memberCardUUID, allParams);
     }

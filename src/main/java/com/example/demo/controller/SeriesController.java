@@ -17,7 +17,7 @@ import java.util.UUID;
 @Validated
 @CrossOrigin
 @RestController
-@RequestMapping("api/series")
+@RequestMapping("api/public/series")
 public class SeriesController {
 
     private final SeriesService seriesService;

@@ -11,6 +11,6 @@ import java.util.UUID;
 @Repository
 public interface MemberCardRepository extends JpaRepository<MemberCard, Integer> {
 
-    @Query("SELECT b FROM member_card b WHERE b.deleted_at is null and b.member_card_uuid = :uuid")
+    @Query("SELECT b FROM member_card b WHERE b.deleted_at is null and b.memberCardUUID = :uuid")
     Optional<MemberCard> findMemberCardByUuid(UUID uuid);
 }
