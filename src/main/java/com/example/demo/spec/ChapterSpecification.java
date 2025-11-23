@@ -1,9 +1,11 @@
 package com.example.demo.spec;
 
 import com.example.demo.model.Chapter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,15 +17,24 @@ public class ChapterSpecification {
         return (root, query, criteriaBuilder) -> {
 
             List<Predicate> predicates = new ArrayList<>();
-            String chapterNumberStr = (String) allParams.get("chapter_number");
+            String chapterNumberStr = (String) allParams.get("chapterNumber");
+            String title = (String) allParams.get("title");
+            String secondTitle = (String) allParams.get("secondTitle");
+
+            if (StringUtils.isNotBlank(title)) {
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), likePattern(title)));
+            }
+
+            if (StringUtils.isNotBlank(secondTitle)) {
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("secondTitle")), likePattern(secondTitle)));
+            }
 
             if (org.apache.commons.lang3.StringUtils.isNotBlank(chapterNumberStr)) {
 
                 try {
 
                     Integer chapterNumberInt = Integer.parseInt(chapterNumberStr);
-                    System.out.println("Parsed chapter number: " + chapterNumberInt);
-                    predicates.add(criteriaBuilder.equal(root.get("chapter_number"), chapterNumberInt));
+                    predicates.add(criteriaBuilder.equal(root.get("chapterNumber"), chapterNumberInt));
 
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("chapter number must be a number", e);
@@ -32,5 +43,17 @@ public class ChapterSpecification {
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
+    }
+
+    public static Specification<Chapter> publishedBetween(LocalDate startOfWeek, LocalDate endOfWeek) {
+        return (root, query, cb) -> cb.between(root.get("publicationDate"), startOfWeek, endOfWeek);
+    }
+
+    public static Specification<Chapter> hasType(String type) {
+        return (root, query, cb) -> type != null ? cb.equal(root.get("type"), type) : cb.conjunction();
+    }
+
+    private static String likePattern(String value) {
+        return "%" + value.toLowerCase() + "%";
     }
 }
