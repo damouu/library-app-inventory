@@ -29,5 +29,5 @@ Thumbs.db
 # docker files (optional)
 docker-compose.yml
 docker-compose.override.yml
-Dockerfile.dev
+docker/Dockerfile.dev
 compose.yml
