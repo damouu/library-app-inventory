@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.BookPayload;
+import com.example.demo.dto.BookToDecrement;
+import com.example.demo.dto.BorrowEventPayload;
 import com.example.demo.model.Book;
 import com.example.demo.repository.BookRepository;
 import lombok.Data;
@@ -36,12 +37,12 @@ public class BookService {
     /**
      * Listener borrow books.
      *
-     * @param borrowedData the borrowed data
+     * @param borrowPayloadData the borrowed data
      */
     @Transactional
-    public void listenerBorrowBooks(BookPayload borrowedData, Boolean isBorrowed) {
-        List<UUID> newBorrowUuids = borrowedData.getBooks().keySet().stream().map(UUID::fromString).toList();
-        bookRepository.updateBorrowedStatusInBatch(newBorrowUuids, isBorrowed);
+    public void listenerBorrowBooks(BorrowEventPayload borrowPayloadData, Boolean isBorrowed) {
+        List<UUID> booksUuidToBorrow = borrowPayloadData.getData().getInventoryData().getBooks().stream().map(BookToDecrement::getBook_uuid).toList();
+        bookRepository.updateBorrowedStatusInBatch(booksUuidToBorrow, isBorrowed);
     }
 
 }

@@ -1,8 +1,9 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.BookPayload;
+import com.example.demo.dto.BorrowEventPayload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,13 +16,13 @@ public class KafkaListeners {
         this.bookService = bookService;
     }
 
-    @KafkaListener(topics = "borrow_topic", groupId = "groupId")
-    void listenerBorrow(BookPayload message) {
-        bookService.listenerBorrowBooks(message, true);
+    @KafkaListener(topics = "library.borrow.v1", groupId = "groupId", containerFactory = "factory")
+    void listenerBorrow(@Payload BorrowEventPayload BorrowEventPayload) {
+        bookService.listenerBorrowBooks(BorrowEventPayload, true);
     }
 
-    @KafkaListener(topics = "return_topic", groupId = "groupId")
-    void listenerReturn(BookPayload message) {
+    @KafkaListener(topics = "library.return.v1", groupId = "groupId", containerFactory = "factory")
+    void listenerReturn(@Payload BorrowEventPayload message) {
         bookService.listenerBorrowBooks(message, false);
     }
 }
