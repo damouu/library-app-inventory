@@ -26,7 +26,7 @@ public class BookService {
      * find a book by the passed UUID.
      *
      * @param chapterUuid a book's UUID
-     * @return Array returns if the given UUID exists, a book resource and also attach to it, the studentCard associated to it.
+     * @return Array returns if the given UUID exist, a book resource and also attach to it, the studentCard associated to it.
      * @throws ResponseStatusException throws an exception if the given UUID does not correspond to a book in the database.
      */
     public ResponseEntity<Book> checkChapterInventory(UUID chapterUuid) throws ResponseStatusException {
