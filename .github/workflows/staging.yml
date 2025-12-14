@@ -3,7 +3,7 @@ name: YouTrack-Staging
 on:
   pull_request:
     types:
-      - opened
+      - labeled
 
 jobs:
   build:
