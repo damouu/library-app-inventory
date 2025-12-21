@@ -18,12 +18,12 @@ import java.util.UUID;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer>, JpaSpecificationExecutor<Book> {
 
-    Optional<Book> findFirstByChapterUUIDAndDeletedDateIsNullAndCurrentlyBorrowedIsFalse(UUID chapterUUID);
+    Optional<Book> findFirstBychapterUuIDAndDeletedDateIsNullAndCurrentlyBorrowedIsFalse(UUID chapterUUID);
 
     Page<Book> findAll(Specification<Book> specification, Pageable pageable);
 
     @Modifying
-    @Query("UPDATE book b SET b.currentlyBorrowed = :status WHERE b.bookUUID IN :bookUuids")
+    @Query("UPDATE Book b SET b.currentlyBorrowed = :status WHERE b.bookUuID IN :bookUuids")
     void updateBorrowedStatusInBatch(@Param("bookUuids") List<UUID> bookUuids, @Param("status") boolean status);
 
 }
