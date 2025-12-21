@@ -13,11 +13,12 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "book")
-@Table(name = "book", uniqueConstraints = {@UniqueConstraint(name = "book_uuid", columnNames = "book_uuid")})
+@Entity
+@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Book {
 
     @Id
@@ -27,32 +28,23 @@ public class Book {
     @Getter(onMethod = @__(@JsonIgnore))
     private Integer id;
 
-    @Column(nullable = false, columnDefinition = "UUID", name = "book_uuid")
-    @Getter
-    @Setter
-    private UUID bookUUID;
+    @Column(nullable = false, updatable = false, unique = true)
+    private UUID bookUuID;
 
-    @Column(nullable = false, columnDefinition = "UUID", name = "chapter_uuid")
-    @Getter
-    @Setter
-    private UUID chapterUUID;
+    @Column(nullable = false, updatable = false)
+    private UUID chapterUuID;
 
-    @Column(nullable = false, name = "is_borrowed")
-    @Setter
-    @Getter
+    @Column(nullable = false)
     private boolean currentlyBorrowed;
 
-    @Column(nullable = false, name = "added_date", columnDefinition = "timestamp")
+    @Column(nullable = false, updatable = false)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @Getter(onMethod = @__(@JsonIgnore))
-    @Setter
     @JsonIgnore
     private LocalDate addedDate;
 
-    @Column(name = "deleted_date", columnDefinition = "timestamp")
-    @Getter
-    @Setter
+    @Column(columnDefinition = "timestamp")
     private LocalDate deletedDate;
 
 }
