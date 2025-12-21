@@ -30,7 +30,7 @@ public class BookService {
      * @throws ResponseStatusException throws an exception if the given UUID does not correspond to a book in the database.
      */
     public ResponseEntity<Book> checkChapterInventory(UUID chapterUuid) throws ResponseStatusException {
-        Book book = bookRepository.findFirstByChapterUUIDAndDeletedDateIsNullAndCurrentlyBorrowedIsFalse(chapterUuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "book not found"));
+        Book book = bookRepository.findFirstBychapterUuIDAndDeletedDateIsNullAndCurrentlyBorrowedIsFalse(chapterUuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "book not found"));
         return ResponseEntity.ok(book);
     }
 
