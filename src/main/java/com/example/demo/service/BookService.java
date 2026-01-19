@@ -5,7 +5,7 @@ import com.example.demo.dto.BorrowEventPayload;
 import com.example.demo.dto.ReturnEventPayload;
 import com.example.demo.model.Book;
 import com.example.demo.repository.BookRepository;
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.UUID;
 
 
-@Data
 @Service
+@RequiredArgsConstructor
 public class BookService {
 
     private final BookRepository bookRepository;
