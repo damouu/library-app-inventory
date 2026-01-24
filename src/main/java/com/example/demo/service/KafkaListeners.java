@@ -17,12 +17,12 @@ public class KafkaListeners {
         this.bookService = bookService;
     }
 
-    @KafkaListener(topics = "library.borrow.v1", groupId = "groupId", containerFactory = "factory")
+    @KafkaListener(topics = "library.borrow.v1", groupId = "inventory-group", containerFactory = "factory")
     void listenerBorrow(@Payload BorrowEventPayload BorrowEventPayload) {
         bookService.listenerBorrowBooks(BorrowEventPayload, true);
     }
 
-    @KafkaListener(topics = "library.return.v1", groupId = "groupId", containerFactory = "factory")
+    @KafkaListener(topics = "library.return.v1", groupId = "inventory-group", containerFactory = "factory")
     void listenerReturn(@Payload ReturnEventPayload returnEventPayload) {
         bookService.listenerReturnBorrowedBooks(returnEventPayload, false);
     }
