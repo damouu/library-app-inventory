@@ -14,9 +14,13 @@
     <artifactId>inventory-service</artifactId>
     <version>2.0.0-SNAPSHOT</version>
 
-    <name>図書館 Inventory Service</name>
+    <name>図書館システム 在庫管理サービス</name>
     <description>
-        図書館システムの書籍データ在庫の状況を提供し、 フロントエンドに在庫状況を供給するAPI。
+        図書館システムにおける書籍の在庫情報を管理するサービスです。
+        貸出サービスから発行される貸出・返却イベントを Kafka 経由で受信し、
+        書籍ごとの在庫状態を更新します。
+        また、フロントエンドからのリクエストに対して、
+        貸出可能な冊数などの在庫状況を提供します。
     </description>
 
     <properties>
