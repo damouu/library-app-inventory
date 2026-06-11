@@ -1,6 +1,7 @@
 package com.example.demo.unit.service;
 
-import com.example.demo.dto.BorrowEventPayload;
+import com.example.demo.dto.BorrowCreatedEvent;
+import com.example.demo.dto.ChapterCreatedEvent;
 import com.example.demo.dto.ReturnEventPayload;
 import com.example.demo.service.BookService;
 import com.example.demo.service.KafkaListeners;
@@ -22,6 +23,7 @@ class KafkaListenersTest {
 
     private KafkaListeners kafkaListeners;
 
+
     @BeforeEach
     void setup() {
         kafkaListeners = new KafkaListeners(bookService);
@@ -30,9 +32,9 @@ class KafkaListenersTest {
     @Test
     @DisplayName("true")
     void testListenerBorrowFalse() {
-        BorrowEventPayload borrowEventPayload = Instancio.create(BorrowEventPayload.class);
-        kafkaListeners.listenerBorrow(borrowEventPayload);
-        verify(bookService).listenerBorrowBooks(borrowEventPayload, true);
+        BorrowCreatedEvent borrowCreatedEvent = Instancio.create(BorrowCreatedEvent.class);
+        kafkaListeners.listenerBorrow(borrowCreatedEvent);
+        verify(bookService).listenerBorrowBooks(borrowCreatedEvent, true);
 
     }
 
@@ -43,6 +45,15 @@ class KafkaListenersTest {
         ReturnEventPayload returnEventPayload = Instancio.create(ReturnEventPayload.class);
         kafkaListeners.listenerReturn(returnEventPayload);
         verify(bookService).listenerReturnBorrowedBooks(returnEventPayload, false);
+
+    }
+
+    @Test
+    @DisplayName("testListenerCatalog")
+    void testListenerCatalog() {
+        ChapterCreatedEvent chapterCreatedEvent = Instancio.create(ChapterCreatedEvent.class);
+        kafkaListeners.listenerCatalog(chapterCreatedEvent);
+        verify(bookService).listenerCatalogBooks(chapterCreatedEvent);
 
     }
 }
