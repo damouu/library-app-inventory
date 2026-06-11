@@ -9,8 +9,8 @@ import lombok.*;
 @AllArgsConstructor
 public class BorrowEventPayload {
 
-    private EventData data;
-
     private Metadata metadata;
+
+    private EventData data;
 
 }
