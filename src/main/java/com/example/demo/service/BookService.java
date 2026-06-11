@@ -1,8 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.BookToDecrement;
-import com.example.demo.dto.BorrowEventPayload;
-import com.example.demo.dto.ReturnEventPayload;
+import com.example.demo.dto.*;
 import com.example.demo.model.Book;
 import com.example.demo.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,11 +40,10 @@ public class BookService {
      * @param borrowPayloadData the borrowed data
      */
     @Transactional
-    public void listenerBorrowBooks(BorrowEventPayload borrowPayloadData, Boolean isBorrowed) {
-        List<UUID> booksUuidToBorrow = borrowPayloadData.getData().getInventoryData().getBooks().stream().map(BookToDecrement::getBook_uuid).toList();
+    public void listenerBorrowBooks(BorrowCreatedEvent borrowCreatedEvent, Boolean isBorrowed) {
+        List<UUID> booksUuidToBorrow = borrowCreatedEvent.getData().getBorrowed_items().stream().map(BorrowedItem::getBook_uuid).toList();
         bookRepository.updateBorrowedStatusInBatch(booksUuidToBorrow, isBorrowed);
     }
-
 
     /**
      * Listener borrow books.
@@ -56,6 +54,20 @@ public class BookService {
     public void listenerReturnBorrowedBooks(ReturnEventPayload returnEventPayload, Boolean isBorrowed) {
         List<UUID> booksUuidToBorrow = returnEventPayload.getData().getInventoryData().getBooks().stream().map(BookToDecrement::getBook_uuid).toList();
         bookRepository.updateBorrowedStatusInBatch(booksUuidToBorrow, isBorrowed);
+    }
+
+    /**
+     * @param chapterCreatedEvent
+     */
+    @Transactional
+    public void listenerCatalogBooks(ChapterCreatedEvent chapterCreatedEvent) {
+        List<Book> copies = new ArrayList<>();
+
+        for (int i = 0; i < chapterCreatedEvent.getData().getInitial_copies_count(); i++) {
+            copies.add(Book.builder().bookUuID(UUID.randomUUID()).chapterUuID(chapterCreatedEvent.getData().getChapter_uuid()).currentlyBorrowed(false).build());
+
+        }
+        bookRepository.saveAll(copies);
     }
 
 }

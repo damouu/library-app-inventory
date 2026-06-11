@@ -5,12 +5,12 @@ import lombok.*;
 @Getter
 @Setter
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BorrowEventPayload {
+public class ChapterCreatedEvent {
 
     private Metadata metadata;
 
-    private EventData data;
-
+    private ChapterCreatedEventData data;
 }

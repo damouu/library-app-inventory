@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -42,6 +43,7 @@ public class Book {
     @JsonSerialize(using = LocalDateSerializer.class)
     @Getter(onMethod = @__(@JsonIgnore))
     @JsonIgnore
+    @CreationTimestamp
     private LocalDate addedDate;
 
     @Column(columnDefinition = "timestamp")

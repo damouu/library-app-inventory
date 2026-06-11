@@ -4,13 +4,12 @@ import lombok.*;
 
 @Getter
 @Setter
-@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BorrowEventPayload {
+public class BorrowCreatedEvent {
 
     private Metadata metadata;
 
-    private EventData data;
-
+    private BorrowCreatedEventData data;
 }
