@@ -1,7 +1,6 @@
 package com.example.demo.unit.service;
 
-import com.example.demo.dto.BorrowEventPayload;
-import com.example.demo.dto.ReturnEventPayload;
+import com.example.demo.dto.*;
 import com.example.demo.model.Book;
 import com.example.demo.repository.BookRepository;
 import com.example.demo.service.BookService;
@@ -10,21 +9,21 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.instancio.Select.field;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
@@ -41,10 +40,13 @@ class BookServiceTest {
 
     ReturnEventPayload returnEventPayload;
 
+    BorrowCreatedEvent borrowCreatedEvent;
+
     @BeforeEach
     void setUp() {
         borrowEventPayload = Instancio.create(BorrowEventPayload.class);
         returnEventPayload = Instancio.create(ReturnEventPayload.class);
+        borrowCreatedEvent = Instancio.create(BorrowCreatedEvent.class);
         book = Instancio.of(Book.class).ignore(field(Book::getId)).ignore(field(Book::getDeletedDate)).ignore(field(Book::getAddedDate)).create();
     }
 
@@ -57,7 +59,7 @@ class BookServiceTest {
         Assertions.assertTrue(response.getStatusCode().is2xxSuccessful());
         Assertions.assertNotNull(response.getBody());
         Assertions.assertEquals(response.getBody().getBookUuID(), book.getBookUuID());
-        verify(bookRepository, Mockito.times(1)).findFirstBychapterUuIDAndDeletedDateIsNullAndCurrentlyBorrowedIsFalse(uuid);
+        verify(bookRepository, times(1)).findFirstBychapterUuIDAndDeletedDateIsNullAndCurrentlyBorrowedIsFalse(uuid);
     }
 
     @Test
@@ -68,18 +70,46 @@ class BookServiceTest {
         Assertions.assertThrows(ResponseStatusException.class, () -> {
             bookService.checkChapterInventory(uuid);
         });
-        verify(bookRepository, Mockito.times(1)).findFirstBychapterUuIDAndDeletedDateIsNullAndCurrentlyBorrowedIsFalse(uuid);
+        verify(bookRepository, times(1)).findFirstBychapterUuIDAndDeletedDateIsNullAndCurrentlyBorrowedIsFalse(uuid);
     }
 
     @Test
     void listenerBorrowBooks() {
-        bookService.listenerBorrowBooks(borrowEventPayload, true);
-        verify(bookRepository, Mockito.times(1)).updateBorrowedStatusInBatch(anyList(), eq(true));
+        bookService.listenerBorrowBooks(borrowCreatedEvent, true);
+        verify(bookRepository, times(1)).updateBorrowedStatusInBatch(anyList(), eq(true));
     }
 
     @Test
     void listenerReturnBorrowedBooks() {
         bookService.listenerReturnBorrowedBooks(returnEventPayload, false);
-        verify(bookRepository, Mockito.times(1)).updateBorrowedStatusInBatch(anyList(), eq(false));
+        verify(bookRepository, times(1)).updateBorrowedStatusInBatch(anyList(), eq(false));
     }
+
+
+    @Test
+    void listenerCatalogBooks_shouldCreateRequestedNumberOfCopies() {
+
+        UUID chapterUuid = UUID.randomUUID();
+
+        ChapterCreatedEventData data = ChapterCreatedEventData.builder().chapter_uuid(chapterUuid).initial_copies_count(5).build();
+
+        ChapterCreatedEvent event = ChapterCreatedEvent.builder().data(data).build();
+
+        bookService.listenerCatalogBooks(event);
+
+        ArgumentCaptor<List<Book>> booksCaptor = ArgumentCaptor.forClass(List.class);
+
+        verify(bookRepository, times(1)).saveAll(booksCaptor.capture());
+
+        List<Book> savedBooks = booksCaptor.getValue();
+
+        Assertions.assertEquals(5, savedBooks.size());
+
+        savedBooks.forEach(book -> {
+            Assertions.assertEquals(chapterUuid, book.getChapterUuID());
+            Assertions.assertFalse(book.isCurrentlyBorrowed());
+            Assertions.assertNotNull(book.getBookUuID());
+        });
+    }
+
 }
