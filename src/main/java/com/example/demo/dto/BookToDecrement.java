@@ -10,5 +10,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookToDecrement {
+
     private UUID book_uuid;
+
+    private UUID chapter_uuid;
 }
