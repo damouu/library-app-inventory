@@ -2,7 +2,7 @@ package com.example.demo.unit.service;
 
 import com.example.demo.dto.BorrowCreatedEvent;
 import com.example.demo.dto.ChapterCreatedEvent;
-import com.example.demo.dto.ReturnEventPayload;
+import com.example.demo.dto.ReturnCreatedEvent;
 import com.example.demo.service.BookService;
 import com.example.demo.service.KafkaListeners;
 import org.instancio.Instancio;
@@ -42,9 +42,9 @@ class KafkaListenersTest {
     @Test
     @DisplayName("false")
     void testListenerReturnFalse() {
-        ReturnEventPayload returnEventPayload = Instancio.create(ReturnEventPayload.class);
-        kafkaListeners.listenerReturn(returnEventPayload);
-        verify(bookService).listenerReturnBorrowedBooks(returnEventPayload, false);
+        ReturnCreatedEvent returnCreatedEvent = Instancio.create(ReturnCreatedEvent.class);
+        kafkaListeners.listenerReturn(returnCreatedEvent);
+        verify(bookService).listenerReturnBorrowedBooks(returnCreatedEvent, false);
 
     }
 
