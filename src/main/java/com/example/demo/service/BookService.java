@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.UUID;
 
 
+/**
+ * The type Book service.
+ */
 @Service
 @RequiredArgsConstructor
 public class BookService {
@@ -37,7 +40,8 @@ public class BookService {
     /**
      * Listener borrow books.
      *
-     * @param borrowPayloadData the borrowed data
+     * @param borrowCreatedEvent the borrowed data
+     * @param isBorrowed         the borrowed data
      */
     @Transactional
     public void listenerBorrowBooks(BorrowCreatedEvent borrowCreatedEvent, Boolean isBorrowed) {
@@ -46,18 +50,21 @@ public class BookService {
     }
 
     /**
-     * Listener borrow books.
+     * Listener return books.
      *
-     * @param returnEventPayload the borrowed data
+     * @param returnCreatedEvent the borrowed data
+     * @param isBorrowed         the borrowed data
      */
     @Transactional
-    public void listenerReturnBorrowedBooks(ReturnEventPayload returnEventPayload, Boolean isBorrowed) {
-        List<UUID> booksUuidToBorrow = returnEventPayload.getData().getInventoryData().getBooks().stream().map(BookToDecrement::getBook_uuid).toList();
+    public void listenerReturnBorrowedBooks(ReturnCreatedEvent returnCreatedEvent, Boolean isBorrowed) {
+        List<UUID> booksUuidToBorrow = returnCreatedEvent.getData().getReturned_items().stream().map(BookToDecrement::getBook_uuid).toList();
         bookRepository.updateBorrowedStatusInBatch(booksUuidToBorrow, isBorrowed);
     }
 
     /**
-     * @param chapterCreatedEvent
+     * Listener catalog books.
+     *
+     * @param chapterCreatedEvent dede
      */
     @Transactional
     public void listenerCatalogBooks(ChapterCreatedEvent chapterCreatedEvent) {
