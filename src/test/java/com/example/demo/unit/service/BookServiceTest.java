@@ -38,14 +38,14 @@ class BookServiceTest {
 
     BorrowEventPayload borrowEventPayload;
 
-    ReturnEventPayload returnEventPayload;
+    ReturnCreatedEvent returnCreatedEvent;
 
     BorrowCreatedEvent borrowCreatedEvent;
 
     @BeforeEach
     void setUp() {
         borrowEventPayload = Instancio.create(BorrowEventPayload.class);
-        returnEventPayload = Instancio.create(ReturnEventPayload.class);
+        returnCreatedEvent = Instancio.create(ReturnCreatedEvent.class);
         borrowCreatedEvent = Instancio.create(BorrowCreatedEvent.class);
         book = Instancio.of(Book.class).ignore(field(Book::getId)).ignore(field(Book::getDeletedDate)).ignore(field(Book::getAddedDate)).create();
     }
@@ -81,7 +81,7 @@ class BookServiceTest {
 
     @Test
     void listenerReturnBorrowedBooks() {
-        bookService.listenerReturnBorrowedBooks(returnEventPayload, false);
+        bookService.listenerReturnBorrowedBooks(returnCreatedEvent, false);
         verify(bookRepository, times(1)).updateBorrowedStatusInBatch(anyList(), eq(false));
     }
 

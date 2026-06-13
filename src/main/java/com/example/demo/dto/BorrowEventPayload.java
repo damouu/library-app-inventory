@@ -11,6 +11,6 @@ public class BorrowEventPayload {
 
     private Metadata metadata;
 
-    private EventData data;
+    private ReturnCreatedEventData data;
 
 }
