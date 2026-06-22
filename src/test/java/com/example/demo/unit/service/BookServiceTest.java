@@ -94,7 +94,7 @@ class BookServiceTest {
     void listenerCatalogBooks_shouldCreateRequestedNumberOfCopies() {
         UUID chapterUuid = UUID.randomUUID();
         UUID eventUuid = UUID.randomUUID();
-        Metadata metadata = new Metadata("dede", eventUuid, "dede", "dede", eventUuid);
+        Metadata metadata = new Metadata("dede", "dede", "dede", eventUuid);
         ChapterCreatedEventData data2 = new ChapterCreatedEventData(chapterUuid, UUID.randomUUID(), "dede", "dede", 10, 1, "dede", "dede", "dede", 1);
         ChapterCreatedEvent event2 = new ChapterCreatedEvent(metadata, data2);
         bookService.listenerCatalogBooks(event2);
