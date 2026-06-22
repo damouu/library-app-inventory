@@ -5,9 +5,7 @@ import java.util.UUID;
 
 public record Metadata(
         String timestamp,
-
-        UUID memberCardUUID,
-
+        
         String source_service,
 
         String event_type,

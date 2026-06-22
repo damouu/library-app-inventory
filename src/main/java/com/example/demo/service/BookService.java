@@ -49,9 +49,9 @@ public class BookService {
     @Transactional
     public void listenerBorrowBooks(BorrowCreatedEvent event, Boolean isBorrowed) {
         List<UUID> booksUuidToBorrow = event.data().borrowed_items().stream().map(BorrowedItem::book_uuid).toList();
-        log.info("Processing CHAPTER_CREATED event {} for chapter {}", event.metadata().event_uuid(), booksUuidToBorrow);
+        log.info("Processing BORROW_CREATED event {} for books {}", event.metadata().event_uuid(), booksUuidToBorrow);
         bookRepository.updateBorrowedStatusInBatch(booksUuidToBorrow, isBorrowed);
-        log.info("Processed BORROW_RETURN event {} for books {}", event.metadata().event_uuid(), booksUuidToBorrow);
+        log.info("Processed BORROW_CREATED event {} for books {}", event.metadata().event_uuid(), booksUuidToBorrow);
     }
 
     /**
