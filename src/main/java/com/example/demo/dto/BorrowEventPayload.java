@@ -1,16 +1,8 @@
 package com.example.demo.dto;
 
-import lombok.*;
+public record BorrowEventPayload(
+        Metadata metadata,
 
-@Getter
-@Setter
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class BorrowEventPayload {
-
-    private Metadata metadata;
-
-    private ReturnCreatedEventData data;
-
+        ReturnCreatedEventData data
+) {
 }
