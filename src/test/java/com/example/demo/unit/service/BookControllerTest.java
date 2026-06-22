@@ -1,6 +1,7 @@
 package com.example.demo.unit.service;
 
 import com.example.demo.controller.BookController;
+import com.example.demo.dto.BookSummary;
 import com.example.demo.model.Book;
 import com.example.demo.service.BookService;
 import org.instancio.Instancio;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.UUID;
@@ -31,18 +33,13 @@ class BookControllerTest {
     @Test
     @DisplayName("Should return book details when valid UUID is provided")
     void shouldReturnBookDetailsWhenValidUuidIsProvided() {
-        Book book = Instancio.create(Book.class);
-        ResponseEntity<Book> expectedResponse = ResponseEntity.ok(book);
-
+        BookSummary bookSummary = new BookSummary(UUID.randomUUID(), UUID.randomUUID(), false);
+        ResponseEntity<BookSummary> expectedResponse = ResponseEntity.ok(bookSummary);
         UUID bookUUID = UUID.randomUUID();
-
-        when(bookService.checkChapterInventory(bookUUID)).thenReturn(expectedResponse);
-
-        ResponseEntity<Book> response = bookController.getBookUuid(bookUUID);
-
-        assertEquals(expectedResponse.getStatusCode(), response.getStatusCode());
-        assertEquals(expectedResponse.getBody(), response.getBody());
-
+        when(bookService.checkChapterInventory(bookUUID)).thenReturn(bookSummary);
+        BookSummary response = bookController.getBookUuid(bookUUID);
+        assertEquals(HttpStatus.OK, expectedResponse.getStatusCode());
+        assertEquals(bookSummary, response);
         verify(bookService).checkChapterInventory(bookUUID);
     }
 }

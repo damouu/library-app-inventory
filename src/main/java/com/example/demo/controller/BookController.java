@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.BookSummary;
 import com.example.demo.model.Book;
 import com.example.demo.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping(path = "/{chapterUUID}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Book> getBookUuid(@PathVariable("chapterUUID") UUID chapterUUID) {
+    public BookSummary getBookUuid(@PathVariable("chapterUUID") UUID chapterUUID) {
         return bookService.checkChapterInventory(chapterUUID);
     }
 }

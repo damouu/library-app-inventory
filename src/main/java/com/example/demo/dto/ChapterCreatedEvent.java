@@ -1,16 +1,8 @@
 package com.example.demo.dto;
 
-import lombok.*;
+public record ChapterCreatedEvent(
+        Metadata metadata,
 
-@Getter
-@Setter
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ChapterCreatedEvent {
-
-    private Metadata metadata;
-
-    private ChapterCreatedEventData data;
+        ChapterCreatedEventData data
+) {
 }
