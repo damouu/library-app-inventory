@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.*;
+import com.example.demo.event.InventoryUseCase;
 import com.example.demo.exception.ChapterNotFoundException;
 import com.example.demo.mapper.BookMapper;
 import com.example.demo.model.Book;
@@ -21,7 +22,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BookService {
+public class InventoryService implements InventoryUseCase {
 
     private final BookRepository bookRepository;
 
@@ -47,7 +48,7 @@ public class BookService {
      * @param isBorrowed the borrowed data
      */
     @Transactional
-    public void listenerBorrowBooks(BorrowCreatedEvent event, Boolean isBorrowed) {
+    public void handleBorrow(BorrowCreatedEvent event, boolean isBorrowed) {
         List<UUID> booksUuidToBorrow = event.data().borrowed_items().stream().map(BorrowedItem::book_uuid).toList();
         log.info("Processing BORROW_CREATED event {} for books {}", event.metadata().event_uuid(), booksUuidToBorrow);
         bookRepository.updateBorrowedStatusInBatch(booksUuidToBorrow, isBorrowed);
@@ -61,7 +62,7 @@ public class BookService {
      * @param isBorrowed the borrowed data
      */
     @Transactional
-    public void listenerReturnBorrowedBooks(ReturnCreatedEvent event, Boolean isBorrowed) {
+    public void handleReturn(ReturnCreatedEvent event, boolean isBorrowed) {
         List<UUID> returnedBookUuids = event.data().returned_items().stream().map(BookToDecrement::book_uuid).toList();
         log.info("Processing BORROW_RETURN event {} for books {}", event.metadata().event_uuid(), returnedBookUuids);
         bookRepository.updateBorrowedStatusInBatch(returnedBookUuids, isBorrowed);
@@ -74,7 +75,7 @@ public class BookService {
      * @param event dede
      */
     @Transactional
-    public void listenerCatalogBooks(ChapterCreatedEvent event) {
+    public void handleChapterCreated(ChapterCreatedEvent event) {
         List<Book> copies = new ArrayList<>();
         log.info("Processing CHAPTER_CREATED event {} for chapter {}", event.metadata().event_uuid(), event.data().chapter_uuid());
         for (int i = 0; i < event.data().initial_copies_count(); i++) {
