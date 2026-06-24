@@ -3,8 +3,8 @@ package com.example.demo.unit.service;
 import com.example.demo.dto.BorrowCreatedEvent;
 import com.example.demo.dto.ChapterCreatedEvent;
 import com.example.demo.dto.ReturnCreatedEvent;
-import com.example.demo.service.BookService;
-import com.example.demo.service.KafkaListeners;
+import com.example.demo.service.InventoryService;
+import com.example.demo.kafka.InventoryKafkaConsumer;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,25 +16,25 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class KafkaListenersTest {
+class InventoryKafkaConsumerTest {
 
     @Mock
-    private BookService bookService;
+    private InventoryService inventoryService;
 
-    private KafkaListeners kafkaListeners;
+    private InventoryKafkaConsumer inventoryKafkaConsumer;
 
 
     @BeforeEach
     void setup() {
-        kafkaListeners = new KafkaListeners(bookService);
+        inventoryKafkaConsumer = new InventoryKafkaConsumer(inventoryService);
     }
 
     @Test
     @DisplayName("true")
     void testListenerBorrowFalse() {
         BorrowCreatedEvent borrowCreatedEvent = Instancio.create(BorrowCreatedEvent.class);
-        kafkaListeners.listenerBorrow(borrowCreatedEvent);
-        verify(bookService).listenerBorrowBooks(borrowCreatedEvent, true);
+        inventoryKafkaConsumer.listenerBorrow(borrowCreatedEvent);
+        verify(inventoryService).handleBorrow(borrowCreatedEvent, true);
 
     }
 
@@ -43,8 +43,8 @@ class KafkaListenersTest {
     @DisplayName("false")
     void testListenerReturnFalse() {
         ReturnCreatedEvent returnCreatedEvent = Instancio.create(ReturnCreatedEvent.class);
-        kafkaListeners.listenerReturn(returnCreatedEvent);
-        verify(bookService).listenerReturnBorrowedBooks(returnCreatedEvent, false);
+        inventoryKafkaConsumer.listenerReturn(returnCreatedEvent);
+        verify(inventoryService).handleReturn(returnCreatedEvent, false);
 
     }
 
@@ -52,8 +52,8 @@ class KafkaListenersTest {
     @DisplayName("testListenerCatalog")
     void testListenerCatalog() {
         ChapterCreatedEvent chapterCreatedEvent = Instancio.create(ChapterCreatedEvent.class);
-        kafkaListeners.listenerCatalog(chapterCreatedEvent);
-        verify(bookService).listenerCatalogBooks(chapterCreatedEvent);
+        inventoryKafkaConsumer.listenerCatalog(chapterCreatedEvent);
+        verify(inventoryService).handleChapterCreated(chapterCreatedEvent);
 
     }
 }
