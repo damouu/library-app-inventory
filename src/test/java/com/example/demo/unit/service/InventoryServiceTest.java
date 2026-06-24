@@ -5,7 +5,7 @@ import com.example.demo.exception.ChapterNotFoundException;
 import com.example.demo.mapper.BookMapper;
 import com.example.demo.model.Book;
 import com.example.demo.repository.BookRepository;
-import com.example.demo.service.BookService;
+import com.example.demo.service.InventoryService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class BookServiceTest {
+class InventoryServiceTest {
 
     @Mock
     private BookRepository bookRepository;
@@ -35,7 +35,7 @@ class BookServiceTest {
     private BookMapper bookMapper;
 
     @InjectMocks
-    private BookService bookService;
+    private InventoryService inventoryService;
 
     Book book;
 
@@ -60,7 +60,7 @@ class BookServiceTest {
         book.setBookUuID(uuid);
         when(bookMapper.toBookSummaryDTO(book)).thenReturn(bookSummary);
         when(bookRepository.findFirstBychapterUuIDAndDeletedDateIsNullAndCurrentlyBorrowedIsFalse(uuid)).thenReturn(Optional.ofNullable(book));
-        BookSummary inventory = bookService.checkChapterInventory(uuid);
+        BookSummary inventory = inventoryService.checkChapterInventory(uuid);
         Assertions.assertFalse(inventory.currently_borrowed());
         verify(bookRepository, times(1)).findFirstBychapterUuIDAndDeletedDateIsNullAndCurrentlyBorrowedIsFalse(uuid);
         verify(bookMapper, times(1)).toBookSummaryDTO(book);
@@ -72,20 +72,20 @@ class BookServiceTest {
         book.setBookUuID(uuid);
         when(bookRepository.findFirstBychapterUuIDAndDeletedDateIsNullAndCurrentlyBorrowedIsFalse(uuid)).thenReturn(Optional.empty());
         Assertions.assertThrows(ChapterNotFoundException.class, () -> {
-            bookService.checkChapterInventory(uuid);
+            inventoryService.checkChapterInventory(uuid);
         });
         verify(bookRepository, times(1)).findFirstBychapterUuIDAndDeletedDateIsNullAndCurrentlyBorrowedIsFalse(uuid);
     }
 
     @Test
     void listenerBorrowBooks() {
-        bookService.listenerBorrowBooks(borrowCreatedEvent, true);
+        inventoryService.handleBorrow(borrowCreatedEvent, true);
         verify(bookRepository, times(1)).updateBorrowedStatusInBatch(anyList(), eq(true));
     }
 
     @Test
     void listenerReturnBorrowedBooks() {
-        bookService.listenerReturnBorrowedBooks(returnCreatedEvent, false);
+        inventoryService.handleReturn(returnCreatedEvent, false);
         verify(bookRepository, times(1)).updateBorrowedStatusInBatch(anyList(), eq(false));
     }
 
@@ -97,7 +97,7 @@ class BookServiceTest {
         Metadata metadata = new Metadata("dede", "dede", "dede", eventUuid);
         ChapterCreatedEventData data2 = new ChapterCreatedEventData(chapterUuid, UUID.randomUUID(), "dede", "dede", 10, 1, "dede", "dede", "dede", 1);
         ChapterCreatedEvent event2 = new ChapterCreatedEvent(metadata, data2);
-        bookService.listenerCatalogBooks(event2);
+        inventoryService.handleChapterCreated(event2);
         ArgumentCaptor<List<Book>> booksCaptor = ArgumentCaptor.forClass(List.class);
         verify(bookRepository, times(1)).saveAll(booksCaptor.capture());
         List<Book> savedBooks = booksCaptor.getValue();
