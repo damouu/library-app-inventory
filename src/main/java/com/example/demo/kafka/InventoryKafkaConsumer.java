@@ -1,8 +1,9 @@
-package com.example.demo.service;
+package com.example.demo.kafka;
 
 import com.example.demo.dto.BorrowCreatedEvent;
 import com.example.demo.dto.ChapterCreatedEvent;
 import com.example.demo.dto.ReturnCreatedEvent;
+import com.example.demo.event.InventoryUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -12,18 +13,19 @@ import org.springframework.stereotype.Component;
  * The type Kafka listeners.
  */
 @Component
-public class KafkaListeners {
+public class InventoryKafkaConsumer {
 
-    private final BookService bookService;
+
+    private final InventoryUseCase inventoryUseCase;
 
     /**
      * Instantiates a new Kafka listeners.
      *
-     * @param bookService the book service
+     * @param inventoryUseCase the book service
      */
     @Autowired
-    public KafkaListeners(BookService bookService) {
-        this.bookService = bookService;
+    public InventoryKafkaConsumer(InventoryUseCase inventoryUseCase) {
+        this.inventoryUseCase = inventoryUseCase;
     }
 
     /**
@@ -33,7 +35,7 @@ public class KafkaListeners {
      */
     @KafkaListener(topics = "library.borrow.v1", groupId = "inventory-group", containerFactory = "factory")
     public void listenerBorrow(@Payload BorrowCreatedEvent borrowCreatedEvent) {
-        bookService.listenerBorrowBooks(borrowCreatedEvent, true);
+        inventoryUseCase.handleBorrow(borrowCreatedEvent, true);
     }
 
     /**
@@ -43,7 +45,7 @@ public class KafkaListeners {
      */
     @KafkaListener(topics = "library.return.v1", groupId = "inventory-group", containerFactory = "factory")
     public void listenerReturn(@Payload ReturnCreatedEvent returnCreatedEvent) {
-        bookService.listenerReturnBorrowedBooks(returnCreatedEvent, false);
+        inventoryUseCase.handleReturn(returnCreatedEvent, false);
     }
 
     /**
@@ -53,6 +55,6 @@ public class KafkaListeners {
      */
     @KafkaListener(topics = "library.catalog.v1", groupId = "inventory-group", containerFactory = "factory")
     public void listenerCatalog(@Payload ChapterCreatedEvent chapterCreatedEvent) {
-        bookService.listenerCatalogBooks(chapterCreatedEvent);
+        inventoryUseCase.handleChapterCreated(chapterCreatedEvent);
     }
 }
