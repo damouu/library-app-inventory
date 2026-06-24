@@ -2,9 +2,7 @@ package com.example.demo.unit.service;
 
 import com.example.demo.controller.BookController;
 import com.example.demo.dto.BookSummary;
-import com.example.demo.model.Book;
-import com.example.demo.service.BookService;
-import org.instancio.Instancio;
+import com.example.demo.service.InventoryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +23,7 @@ import static org.mockito.Mockito.when;
 class BookControllerTest {
 
     @Mock
-    private BookService bookService;
+    private InventoryService inventoryService;
 
     @InjectMocks
     private BookController bookController;
@@ -36,10 +34,10 @@ class BookControllerTest {
         BookSummary bookSummary = new BookSummary(UUID.randomUUID(), UUID.randomUUID(), false);
         ResponseEntity<BookSummary> expectedResponse = ResponseEntity.ok(bookSummary);
         UUID bookUUID = UUID.randomUUID();
-        when(bookService.checkChapterInventory(bookUUID)).thenReturn(bookSummary);
+        when(inventoryService.checkChapterInventory(bookUUID)).thenReturn(bookSummary);
         BookSummary response = bookController.getBookUuid(bookUUID);
         assertEquals(HttpStatus.OK, expectedResponse.getStatusCode());
         assertEquals(bookSummary, response);
-        verify(bookService).checkChapterInventory(bookUUID);
+        verify(inventoryService).checkChapterInventory(bookUUID);
     }
 }
