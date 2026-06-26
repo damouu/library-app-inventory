@@ -20,6 +20,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "book", indexes = {@Index(name = "idx_book_chapter", columnList = "chapter_uuid"), @Index(name = "idx_book_uuid", columnList = "book_uuid", unique = true)})
 public class Book {
 
     @Id
@@ -29,14 +30,17 @@ public class Book {
     @Getter(onMethod = @__(@JsonIgnore))
     private Integer id;
 
-    @Column(nullable = false, updatable = false, unique = true)
-    private UUID bookUuID;
+    @Column(nullable = false, updatable = false, unique = true, name = "book_uuid")
+    private UUID bookUuid;
 
-    @Column(nullable = false, updatable = false)
-    private UUID chapterUuID;
+    @Column(nullable = false, updatable = false, name = "chapter_uuid")
+    private UUID chapterUuid;
 
     @Column(nullable = false)
     private boolean currentlyBorrowed;
+
+    @Column(unique = true)
+    private UUID lastBorrowEventId;
 
     @Column(nullable = false, updatable = false)
     @JsonDeserialize(using = LocalDateDeserializer.class)
