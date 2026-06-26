@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class BookMapper {
 
     public BookSummary toBookSummaryDTO(Book book) {
-        return new BookSummary(book.getBookUuID(), book.getChapterUuID(), book.isCurrentlyBorrowed());
+        return new BookSummary(book.getBookUuid(), book.getChapterUuid(), book.isCurrentlyBorrowed());
     }
 
 }
