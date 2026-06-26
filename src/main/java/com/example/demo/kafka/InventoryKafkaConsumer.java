@@ -1,60 +1,39 @@
 package com.example.demo.kafka;
 
+import com.example.demo.dto.BookToDecrement;
 import com.example.demo.dto.BorrowCreatedEvent;
 import com.example.demo.dto.ChapterCreatedEvent;
 import com.example.demo.dto.ReturnCreatedEvent;
-import com.example.demo.event.InventoryUseCase;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.event.InventoryCommandUseCase;
+import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-/**
- * The type Kafka listeners.
- */
+import java.util.List;
+import java.util.UUID;
+
 @Component
+@RequiredArgsConstructor
 public class InventoryKafkaConsumer {
 
+    private final InventoryCommandUseCase commandUseCase;
 
-    private final InventoryUseCase inventoryUseCase;
-
-    /**
-     * Instantiates a new Kafka listeners.
-     *
-     * @param inventoryUseCase the book service
-     */
-    @Autowired
-    public InventoryKafkaConsumer(InventoryUseCase inventoryUseCase) {
-        this.inventoryUseCase = inventoryUseCase;
+    @KafkaListener(topics = "library.borrow.v1")
+    public void listenerBorrow(BorrowCreatedEvent event) {
+        UUID eventId = event.metadata().event_uuid();
+        event.data().borrowed_items().forEach(item -> {
+            commandUseCase.reserveBook(item.chapter_uuid(), eventId);
+        });
     }
 
-    /**
-     * Listener borrow.
-     *
-     * @param borrowCreatedEvent the borrow created event
-     */
-    @KafkaListener(topics = "library.borrow.v1", groupId = "inventory-group", containerFactory = "factory")
-    public void listenerBorrow(@Payload BorrowCreatedEvent borrowCreatedEvent) {
-        inventoryUseCase.handleBorrow(borrowCreatedEvent, true);
+    @KafkaListener(topics = "library.return.v1")
+    public void listenerReturn(ReturnCreatedEvent event) {
+        List<UUID> bookUuids = event.data().returned_items().stream().map(BookToDecrement::book_uuid).toList();
+        commandUseCase.releaseBook(bookUuids);
     }
 
-    /**
-     * Listener return.
-     *
-     * @param returnCreatedEvent the return created event
-     */
-    @KafkaListener(topics = "library.return.v1", groupId = "inventory-group", containerFactory = "factory")
-    public void listenerReturn(@Payload ReturnCreatedEvent returnCreatedEvent) {
-        inventoryUseCase.handleReturn(returnCreatedEvent, false);
-    }
-
-    /**
-     * Listener catalog.
-     *
-     * @param chapterCreatedEvent the chapter created event
-     */
-    @KafkaListener(topics = "library.catalog.v1", groupId = "inventory-group", containerFactory = "factory")
-    public void listenerCatalog(@Payload ChapterCreatedEvent chapterCreatedEvent) {
-        inventoryUseCase.handleChapterCreated(chapterCreatedEvent);
+    @KafkaListener(topics = "library.catalog.v1")
+    public void listenerCatalog(ChapterCreatedEvent event) {
+        commandUseCase.createChapterStock(event);
     }
 }
