@@ -20,8 +20,8 @@ class BookMapperTest {
         Book book = Instancio.create(Book.class);
         BookSummary result = mapper.toBookSummaryDTO(book);
         assertNotNull(result);
-        assertEquals(book.getBookUuID(), result.book_uuid());
-        assertEquals(book.getChapterUuID(), result.chapter_uuid());
+        assertEquals(book.getBookUuid(), result.book_uuid());
+        assertEquals(book.getChapterUuid(), result.chapter_uuid());
         assertEquals(book.isCurrentlyBorrowed(), result.currently_borrowed());
     }
 }
