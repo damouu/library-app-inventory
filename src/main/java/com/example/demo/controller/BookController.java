@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.BookSummary;
-import com.example.demo.service.InventoryService;
+import com.example.demo.service.InventoryQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -18,10 +18,10 @@ import java.util.UUID;
 @RequestMapping("/public")
 public class BookController {
 
-    private final InventoryService inventoryService;
+    private final InventoryQueryService inventoryQueryService;
 
-    @GetMapping(path = "/{chapterUUID}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BookSummary getBookUuid(@PathVariable("chapterUUID") UUID chapterUUID) {
-        return inventoryService.checkChapterInventory(chapterUUID);
+    @GetMapping(path = "/{chapterUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BookSummary getbookUuid(@PathVariable("chapterUuid") UUID chapterUuid) {
+        return inventoryQueryService.checkChapterInventory(chapterUuid);
     }
 }
