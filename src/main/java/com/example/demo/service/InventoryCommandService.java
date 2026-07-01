@@ -1,9 +1,10 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.BookSummary;
+import com.example.demo.dto.BorrowedItem;
 import com.example.demo.dto.ChapterCreatedEvent;
 import com.example.demo.event.InventoryCommandUseCase;
-import com.example.demo.exception.NoAvailableBookException;
+import com.example.demo.exception.ChapterNotFoundException;
 import com.example.demo.mapper.BookMapper;
 import com.example.demo.model.Book;
 import com.example.demo.repository.BookRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,14 +27,18 @@ public class InventoryCommandService implements InventoryCommandUseCase {
     private final BookMapper bookMapper;
 
     @Transactional
-    public BookSummary reserveBook(UUID chapterUuid, UUID eventId) {
+    public List<BookSummary> reserveBook(List<BorrowedItem> items, UUID eventId) {
         if (bookRepository.existsByLastBorrowEventId(eventId)) {
-            return null;
+            return Collections.emptyList();
         }
-        Book book = bookRepository.findAvailableForUpdate(chapterUuid).stream().findFirst().orElseThrow(() -> new NoAvailableBookException(chapterUuid));
-        book.setCurrentlyBorrowed(true);
-        book.setLastBorrowEventId(eventId);
-        return bookMapper.toBookSummaryDTO(book);
+        List<BookSummary> summaries = new ArrayList<>();
+        for (BorrowedItem item : items) {
+            Book book = bookRepository.findByBookUuid(item.book_uuid()).filter(b -> !b.isCurrentlyBorrowed()).orElseThrow(() -> new ChapterNotFoundException(item.book_uuid()));
+            book.setCurrentlyBorrowed(true);
+            book.setLastBorrowEventId(eventId);
+            summaries.add(bookMapper.toBookSummaryDTO(book));
+        }
+        return summaries;
     }
 
     @Transactional
