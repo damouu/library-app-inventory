@@ -1,14 +1,12 @@
 package com.example.demo.unit.service;
 
-import com.example.demo.dto.BookSummary;
-import com.example.demo.dto.ChapterCreatedEvent;
-import com.example.demo.dto.ChapterCreatedEventData;
-import com.example.demo.dto.Metadata;
-import com.example.demo.exception.NoAvailableBookException;
+import com.example.demo.dto.*;
+import com.example.demo.exception.ChapterNotFoundException;
 import com.example.demo.mapper.BookMapper;
 import com.example.demo.model.Book;
 import com.example.demo.repository.BookRepository;
 import com.example.demo.service.InventoryCommandService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -16,8 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,37 +34,73 @@ class InventoryCommandServiceTest {
     private InventoryCommandService inventoryCommandService;
 
     @Test
+    @DisplayName("should reserve book and return summary when book is available")
     void reserveBook_shouldReserveAndReturnSummary_whenBookIsAvailable() {
+        // Arrange
+        UUID bookUuid = UUID.randomUUID();
         UUID chapterUuid = UUID.randomUUID();
+        BorrowedItem item = new BorrowedItem(bookUuid, UUID.randomUUID()); // Ton DTO/Record
+        List<BorrowedItem> items = List.of(item);
         UUID eventId = UUID.randomUUID();
-        Book book = Book.builder().bookUuid(UUID.randomUUID()).currentlyBorrowed(false).build();
-        BookSummary expectedSummary = new BookSummary(chapterUuid, book.getBookUuid(), true);
+
+        Book book = Book.builder().bookUuid(bookUuid).currentlyBorrowed(false).build();
+
+        BookSummary expectedSummary = new BookSummary(bookUuid, chapterUuid, true);
+
         when(bookRepository.existsByLastBorrowEventId(eventId)).thenReturn(false);
-        when(bookRepository.findAvailableForUpdate(chapterUuid)).thenReturn(List.of(book));
+        // Important : On mock l'Optional retourné par le repository
+        when(bookRepository.findByBookUuid(bookUuid)).thenReturn(Optional.of(book));
         when(bookMapper.toBookSummaryDTO(book)).thenReturn(expectedSummary);
-        BookSummary result = inventoryCommandService.reserveBook(chapterUuid, eventId);
+
+        // Act
+        List<BookSummary> result = inventoryCommandService.reserveBook(items, eventId);
+
+        // Assert
         assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(expectedSummary, result.get(0));
+
+        // Vérification de la mutation de l'entité
         assertTrue(book.isCurrentlyBorrowed());
         assertEquals(eventId, book.getLastBorrowEventId());
+
+        // Vérification des appels
+        verify(bookRepository).existsByLastBorrowEventId(eventId);
+        verify(bookRepository).findByBookUuid(bookUuid); // On vérifie l'appel par UUID de livre
     }
 
     @Test
-    void reserveBook_shouldReturnNull_whenEventAlreadyProcessed_Idempotency() {
-        UUID chapterUuid = UUID.randomUUID();
+    @DisplayName("should return empty list and never query database when event is already processed")
+    void reserveBook_shouldReturnEmptyList_whenEventAlreadyProcessed_Idempotency() {
+        // Arrange
+        BorrowedItem item = new BorrowedItem(UUID.randomUUID(), UUID.randomUUID());
         UUID eventId = UUID.randomUUID();
+
         when(bookRepository.existsByLastBorrowEventId(eventId)).thenReturn(true);
-        BookSummary result = inventoryCommandService.reserveBook(chapterUuid, eventId);
-        assertNull(result);
-        verify(bookRepository, never()).findAvailableForUpdate(any());
+
+        // Act
+        List<BookSummary> result = inventoryCommandService.reserveBook(List.of(item), eventId);
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+
+        // Sécurité : On s'assure qu'on ne cherche aucun livre
+        verify(bookRepository, never()).findByBookUuid(any());
     }
 
     @Test
-    void reserveBook_shouldThrowNoAvailableBookException_whenNoBookStockLeft() {
-        UUID chapterUuid = UUID.randomUUID();
+    @DisplayName("should throw exception when book does not exist or is unavailable")
+    void reserveBook_shouldThrowNoAvailableBookException_whenBookNotFound() {
+        UUID bookUuid = UUID.randomUUID();
+        BorrowedItem item = new BorrowedItem(bookUuid, UUID.randomUUID());
         UUID eventId = UUID.randomUUID();
         when(bookRepository.existsByLastBorrowEventId(eventId)).thenReturn(false);
-        when(bookRepository.findAvailableForUpdate(chapterUuid)).thenReturn(Collections.emptyList());
-        assertThrows(NoAvailableBookException.class, () -> inventoryCommandService.reserveBook(chapterUuid, eventId));
+        when(bookRepository.findByBookUuid(bookUuid)).thenReturn(Optional.empty());
+        assertThrows(ChapterNotFoundException.class, () ->
+                inventoryCommandService.reserveBook(List.of(item), eventId)
+        );
+        verify(bookRepository).findByBookUuid(bookUuid);
     }
 
     @Test
