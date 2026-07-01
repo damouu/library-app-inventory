@@ -4,11 +4,13 @@ import com.example.demo.model.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.*;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.LockModeType;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,20 +27,14 @@ public interface BookRepository extends JpaRepository<Book, Integer>, JpaSpecifi
     @Modifying
     @Query("""
                 UPDATE Book b
-                SET b.currentlyBorrowed = false
+                SET b.currentlyBorrowed = false,
+                    b.lastBorrowEventId = null 
                 WHERE b.bookUuid IN :bookUuids
                   AND b.currentlyBorrowed = true
             """)
     void releaseBooks(@Param("bookUuids") List<UUID> bookUuids);
+    
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("""
-                SELECT b FROM Book b
-                WHERE b.chapterUuid = :chapterUuid
-                  AND b.currentlyBorrowed = false
-                  AND b.deletedDate IS NULL
-                ORDER BY b.addedDate ASC
-            """)
-    List<Book> findAvailableForUpdate(UUID chapterUuid);
+    Optional<Book> findByBookUuid(UUID bookUuid);
 
 }

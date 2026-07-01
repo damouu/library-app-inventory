@@ -21,9 +21,7 @@ public class InventoryKafkaConsumer {
     @KafkaListener(topics = "library.borrow.v1")
     public void listenerBorrow(BorrowCreatedEvent event) {
         UUID eventId = event.metadata().event_uuid();
-        event.data().borrowed_items().forEach(item -> {
-            commandUseCase.reserveBook(item.chapter_uuid(), eventId);
-        });
+        commandUseCase.reserveBook(event.data().borrowed_items(), eventId);
     }
 
     @KafkaListener(topics = "library.return.v1")

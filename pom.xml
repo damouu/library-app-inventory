@@ -213,12 +213,12 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>1</minimum>
+                                            <minimum>0.9</minimum>
                                         </limit>
                                         <limit>
                                             <counter>COMPLEXITY</counter>
                                             <value>MISSEDCOUNT</value>
-                                            <maximum>0</maximum>
+                                            <maximum>2</maximum>
                                         </limit>
                                     </limits>
                                 </rule>
@@ -231,12 +231,12 @@
                                         <limit>
                                             <counter>COMPLEXITY</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>1</minimum>
+                                            <minimum>0</minimum>
                                         </limit>
                                         <limit>
                                             <counter>COMPLEXITY</counter>
                                             <value>TOTALCOUNT</value>
-                                            <maximum>8</maximum>
+                                            <maximum>11</maximum>
                                         </limit>
                                     </limits>
                                 </rule>

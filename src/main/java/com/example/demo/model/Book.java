@@ -39,7 +39,6 @@ public class Book {
     @Column(nullable = false)
     private boolean currentlyBorrowed;
 
-    @Column(unique = true)
     private UUID lastBorrowEventId;
 
     @Column(nullable = false, updatable = false)
