@@ -38,8 +38,9 @@ class InventoryKafkaConsumerTest {
     void testListenerBorrow() {
         BorrowCreatedEvent event = Instancio.create(BorrowCreatedEvent.class);
         inventoryKafkaConsumer.listenerBorrow(event);
-        verify(commandUseCase).reserveBook(event.data().borrowed_items().getFirst().chapter_uuid(), event.metadata().event_uuid());
+        verify(commandUseCase).reserveBook(event.data().borrowed_items(), event.metadata().event_uuid());
     }
+
 
     @Test
     @DisplayName("should delegate return event to command use case")
