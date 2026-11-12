@@ -43,8 +43,6 @@ It acts as the inventory source of truth for all circulation-related operations.
 
 [![Docker Image](https://img.shields.io/docker/v/damou/library-app-inventory?label=docker&logo=docker)](https://hub.docker.com/repository/docker/damou/library-app-inventory/general) [![Docker Pulls](https://img.shields.io/docker/pulls/damou/library-app-inventory?logo=docker)](https://hub.docker.com/repository/docker/damou/library-app-inventory/general) ![Kafka](https://img.shields.io/badge/Kafka-integrated-orange) ![Prometheus](https://img.shields.io/badge/Prometheus-monitored-blue)
 
-**Docker Hub:** [damou/library-app-inventory](https://hub.docker.com/repository/docker/damou/library-app-inventory/general)
-
 ---
 
 ## Architecture Role
