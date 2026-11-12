@@ -1,12 +1,10 @@
-# Inventory Service / 在庫管理サービス
+# Library App Inventory Service
 
-Distributed Library System — Inventory Service  
-
-分散型図書館システム — 在庫管理サービス
+Distributed Library System — Inventory Service
 
 ---
 
-## Overview / 概要
+## Overview
 
 The Inventory Service is an event-driven microservice within the distributed library platform.
 
@@ -18,30 +16,22 @@ It acts as the inventory source of truth for all circulation-related operations.
 
 ---
 
-Inventory Service は分散型図書館システムにおける在庫管理を担当するイベント駆動型マイクロサービスです。
+## Service Boundaries
 
-Kafka を通じて貸出・返却イベントを非同期に処理し、書籍ごとの在庫状態を更新します。
+### Responsibilities
 
-また、現在の貸出可能冊数を REST API 経由で提供し、システム全体における在庫の単一責任ソースとして機能します。
-
----
-
-## Service Boundaries / サービス境界
-
-### Responsibilities / 担当領域
-
-- Borrow / return event consumption
+- Borrow and return event consumption
 - Inventory stock updates
 - Availability state tracking
 - Inventory query APIs
 - Real-time stock consistency
 - OpenAPI documentation generation
 
-### Out of Scope / 対象外
+### Out of Scope
 
 - Catalog metadata management
 - Borrowing history persistence
-- User authentication / authorization
+- User authentication and authorization
 - Notification delivery
 - Member lifecycle management
 
@@ -64,7 +54,7 @@ Kafka を通じて貸出・返却イベントを非同期に処理し、書籍�
 
 ---
 
-## Architecture Role / アーキテクチャ上の役割
+## Architecture Role
 
 The Inventory Service sits between circulation events and availability queries.
 
@@ -72,53 +62,69 @@ It ensures stock changes are processed asynchronously while exposing low-latency
 
 ### Event Flow
 
-Borrow / Return Event  
-↓  
-Kafka Consumer  
-↓  
-Inventory Processing Layer  
-↓  
-Persistence Layer  
-↓  
+Borrow / Return Event
+
+↓
+
+Kafka Consumer
+
+↓
+
+Inventory Processing Layer
+
+↓
+
+Persistence Layer
+
+↓
+
 Availability State Updated
 
 ### Query Flow
 
-Frontend Request  
-↓  
-REST Controller  
-↓  
-Service Layer  
-↓  
-Repository Access  
-↓  
+Frontend Request
+
+↓
+
+REST Controller
+
+↓
+
+Service Layer
+
+↓
+
+Repository Access
+
+↓
+
 Availability Response
 
 ---
 
-## Technology Stack / 技術スタック
+## Technology Stack
 
-| Category | Technology |
-|----------|------------|
-| Runtime | Java 21 |
-| Framework | Spring Boot 2.7 |
-| API | Spring Web |
-| Documentation | Springdoc OpenAPI |
-| Messaging | Apache Kafka |
-| Persistence | Spring Data JPA |
-| Database | PostgreSQL / H2 |
-| Validation | Bean Validation |
-| Monitoring | Actuator / Micrometer / Prometheus |
-| Testing | JUnit 5 / Mockito / Instancio / JaCoCo |
-| CI/CD | GitHub Actions |
+| Category     | Technology                           |
+|--------------|--------------------------------------|
+| Runtime      | Java 21                              |
+| Framework    | Spring Boot 2.7                      |
+| API          | Spring Web                           |
+| Documentation| Springdoc OpenAPI                    |
+| Messaging    | Apache Kafka                         |
+| Persistence  | Spring Data JPA                      |
+| Database     | PostgreSQL / H2                      |
+| Validation   | Bean Validation                      |
+| Monitoring   | Actuator / Micrometer / Prometheus   |
+| Testing      | JUnit 5 / Mockito / Instancio / JaCoCo |
+| CI/CD        | GitHub Actions                       |
 
 ---
 
-## API Surface / API概要
+## API Surface
 
 ### Inventory Query Endpoints
 
-Provides inventory availability information for:
+The service provides inventory availability information, including:
 
 - Available copies
 - Borrowable state
@@ -139,40 +145,7 @@ Provides inventory availability information for:
 
 ---
 
-## Local Development / ローカル開発
-
-### Requirements
-
-- Java 21
-- Maven
-- Docker
-- PostgreSQL
-- Kafka
-
-### Run
-
-```bash
-docker compose up --build
-```
-
----
-
-## Testing / テスト
-
-```bash
-./mvnw verify
-```
-
-Includes:
-
-- Unit tests (Surefire)
-- Integration tests (Failsafe)
-- Coverage validation
-- Complexity enforcement
-
----
-
-## Coverage Policy / カバレッジポリシー
+## Coverage Policy
 
 This service enforces strict build quality gates.
 
@@ -183,7 +156,7 @@ This service enforces strict build quality gates.
 
 ### Service Layer Rules
 
-For `com.example.demo.service.*`
+For `com.example.demo.service.*`:
 
 - Complexity coverage: **100%**
 - Total complexity ≤ **5**
@@ -199,9 +172,9 @@ For `com.example.demo.service.*`
 
 ---
 
-## Configuration / 設定
+## Configuration
 
-Environment variables:
+The service uses environment-driven configuration.
 
 ```env
 SPRING_DATASOURCE_URL=
@@ -214,7 +187,7 @@ Environment-driven configuration is used for all runtime infrastructure.
 
 ---
 
-## Observability / 可観測性
+## Observability
 
 ### Actuator
 
@@ -222,14 +195,14 @@ Environment-driven configuration is used for all runtime infrastructure.
 - `/actuator/metrics`
 - `/actuator/prometheus`
 
-### API Docs
+### API Documentation
 
 - `/swagger-ui.html`
 - `/v3/api-docs`
 
 ---
 
-## Build Guarantees / 品質保証
+## Build Guarantees
 
 The CI pipeline validates:
 
@@ -241,9 +214,9 @@ The CI pipeline validates:
 
 ---
 
-## Future Improvements / 今後の改善
+## Future Improvements
 
-- Reservation / hold support
+- Reservation and hold support
 - Low-stock alerting
 - WebSocket inventory updates
 - Distributed tracing
