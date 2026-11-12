@@ -39,18 +39,11 @@ It acts as the inventory source of truth for all circulation-related operations.
 
 ## Badges
 
-[![Tests](https://github.com/damouu/library-app-inventory/actions/workflows/run-tests.yml/badge.svg?branch=test)](https://github.com/damouu/library-app-inventory/actions/workflows/run-tests.yml)
+[![Tests](https://github.com/damouu/library-app-inventory/actions/workflows/run-tests.yml/badge.svg?branch=test)](https://github.com/damouu/library-app-inventory/actions/workflows/run-tests.yml) [![Merge PR](https://github.com/damouu/library-app-inventory/actions/workflows/merge-pr.yml/badge.svg)](https://github.com/damouu/library-app-inventory/actions/workflows/merge-pr.yml) [![Prepare](https://github.com/damouu/library-app-inventory/actions/workflows/prepare.yml/badge.svg)](https://github.com/damouu/library-app-inventory/actions/workflows/prepare.yml) [![Codecov](https://codecov.io/gh/damouu/library-app-inventory/branch/test/graph/badge.svg)](https://codecov.io/gh/damouu/library-app-inventory) [![Git Tag](https://img.shields.io/github/v/tag/damouu/library-app-inventory?logo=github)](https://github.com/damouu/library-app-inventory/tags)
 
-[![Merge PR](https://github.com/damouu/library-app-inventory/actions/workflows/merge-pr.yml/badge.svg)](https://github.com/damouu/library-app-inventory/actions/workflows/merge-pr.yml)
+[![Docker Image](https://img.shields.io/docker/v/damou/library-app-inventory?label=docker&logo=docker)](https://hub.docker.com/repository/docker/damou/library-app-inventory/general) [![Docker Pulls](https://img.shields.io/docker/pulls/damou/library-app-inventory?logo=docker)](https://hub.docker.com/repository/docker/damou/library-app-inventory/general) ![Kafka](https://img.shields.io/badge/Kafka-integrated-orange) ![Prometheus](https://img.shields.io/badge/Prometheus-monitored-blue)
 
-[![Prepare](https://github.com/damouu/library-app-inventory/actions/workflows/prepare.yml/badge.svg)](https://github.com/damouu/library-app-inventory/actions/workflows/prepare.yml)
-
-[![Codecov](https://codecov.io/gh/damouu/library-app-inventory/branch/test/graph/badge.svg)](https://codecov.io/gh/damouu/library-app-inventory)
-
-[![Git Tag](https://img.shields.io/github/v/tag/damouu/library-app-inventory?logo=github)](https://github.com/damouu/library-app-inventory/tags)
-
-![Kafka](https://img.shields.io/badge/Kafka-integrated-orange)
-![Prometheus](https://img.shields.io/badge/Prometheus-monitored-blue)
+**Docker Hub:** [damou/library-app-inventory](https://hub.docker.com/repository/docker/damou/library-app-inventory/general)
 
 ---
 
@@ -104,19 +97,19 @@ Availability Response
 
 ## Technology Stack
 
-| Category     | Technology                           |
-|--------------|--------------------------------------|
-| Runtime      | Java 21                              |
-| Framework    | Spring Boot 2.7                      |
-| API          | Spring Web                           |
-| Documentation| Springdoc OpenAPI                    |
-| Messaging    | Apache Kafka                         |
-| Persistence  | Spring Data JPA                      |
-| Database     | PostgreSQL / H2                      |
-| Validation   | Bean Validation                      |
-| Monitoring   | Actuator / Micrometer / Prometheus   |
-| Testing      | JUnit 5 / Mockito / Instancio / JaCoCo |
-| CI/CD        | GitHub Actions                       |
+| Category      | Technology                             |
+|---------------|----------------------------------------|
+| Runtime       | Java 21                                |
+| Framework     | Spring Boot 2.7                        |
+| API           | Spring Web                             |
+| Documentation | Springdoc OpenAPI                      |
+| Messaging     | Apache Kafka                           |
+| Persistence   | Spring Data JPA                        |
+| Database      | PostgreSQL / H2                        |
+| Validation    | Bean Validation                        |
+| Monitoring    | Actuator / Micrometer / Prometheus     |
+| Testing       | JUnit 5 / Mockito / Instancio / JaCoCo |
+| CI/CD         | GitHub Actions                         |
 
 ---
 
